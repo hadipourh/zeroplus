@@ -2,6 +2,8 @@
 
 This repository includes the source code of the tools we used in our paper accepted for ToSC 2024/1 ([FSE 2024](https://fse.iacr.org/2024/)): [Improved Search for Integral, Impossible Differential and Zero-Correlation Attacks: Application to Ascon, ForkSKINNY, SKINNY, MANTIS, PRESENT and QARMAv2](https://tosc.iacr.org/index.php/ToSC/article/view/11408)
 
+![logo](miscellaneous/zeroplus.svg)
+
 ## Table of Contents
 
 - [Zeroplus](#zeroplus)
