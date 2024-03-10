@@ -1,0 +1,9 @@
+RB = 0;
+RD = 22;
+Rzero = 11;
+Rone = 15;
+RF = 4;
+cell_size = 4;
+variant = 3;
+NPT = 3;
+is_related_tweakey = true;

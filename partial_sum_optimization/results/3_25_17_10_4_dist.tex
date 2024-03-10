@@ -1,0 +1,291 @@
+% \documentclass[11pt,a3paper,parskip=half]{scrartcl}
+\documentclass[varwidth=50cm]{standalone}
+% \usepackage[margin=1cm]{geometry}
+\usepackage{skinny}
+\usepackage{tugcolors}
+
+\newcommand{\TFill}[2][blue!55]{\fill[#1] (#2) ++(-.5,.5) -- +(0,-1) -- +(1,0) -- cycle;}
+\newcommand{\BFill}[2][green!60]{\fill[#1] (#2) ++(.5,-.5) -- +(0,1) -- +(-1,0) -- cycle;}
+
+\begin{document}
+
+\TKthreefalse % true: show 3 tweakey states / false: show 1 tweakey state
+\substeptrue  % true: show state after each substep / false: show only 2 state per round
+\colorlet{nonzerofixed}{tugyellow}
+\colorlet{nonzeroany}{tugred}
+\colorlet{unknown}{tugblue}
+\colorlet{active}{tuggreen}
+\colorlet{lazy}{gray}% \begin{figure}
+% \centering
+\begin{tikzpicture}
+\SkinnyInit{}{}{}{} % init coordinates, print labels
+
+\SkinnyRoundTK[0]
+              {\Fill[active]{ss00}\Fill[active]{ss01}\Fill[active]{ss03}\Fill[active]{ss11}\Fill[active]{ss20}\Fill[active]{ss21}\Fill[active]{ss22}\Fill[active]{ss23}\Fill[active]{ss30}\Fill[active]{ss31}} % state (input)
+              {\Fill[active]{ss00}\Fill[active]{ss01}\Fill[active]{ss03}\Fill[active]{ss11}\Cell{ss00}{\texttt{0}}\Cell{ss01}{\texttt{1}}\Cell{ss02}{\texttt{2}}\Cell{ss03}{\texttt{3}}\Cell{ss10}{\texttt{4}}\Cell{ss11}{\texttt{5}}\Cell{ss12}{\texttt{6}}\Cell{ss13}{\texttt{7}}} % tk[1]
+              {} % tk[2]
+              {} % tk[3]
+              {\Fill[active]{ss00}\Fill[active]{ss01}\Fill[active]{ss03}\Fill[active]{ss11}\Fill[active]{ss20}\Fill[active]{ss21}\Fill[active]{ss22}\Fill[active]{ss23}\Fill[active]{ss30}\Fill[active]{ss31}} % state (after subcells)
+              {\Fill[active]{ss00}\Fill[active]{ss01}\Fill[active]{ss03}\Fill[active]{ss11}\Fill[active]{ss20}\Fill[active]{ss21}\Fill[active]{ss22}\Fill[active]{ss23}\Fill[active]{ss30}\Fill[active]{ss31}} % state (after addtweakey)
+              {\Fill[active]{ss00}\Fill[active]{ss01}\Fill[active]{ss03}\Fill[active]{ss12}\Fill[active]{ss22}\Fill[active]{ss23}\Fill[active]{ss20}\Fill[active]{ss21}\Fill[active]{ss33}\Fill[active]{ss30}} % state (after shiftrows)
+
+\SkinnyRoundTK[1]
+              {\Fill[unknown]{ss00}\Fill[unknown]{ss03}\Fill[unknown]{ss22}\Fill[unknown]{ss31}} % state (input)
+              {\Fill[unknown]{ss00}\Fill[unknown]{ss03}\Fill[unknown]{ss00}\Fill[unknown]{ss03}\Cell{ss00}{\texttt{9}}\Cell{ss01}{\texttt{f}}\Cell{ss02}{\texttt{8}}\Cell{ss03}{\texttt{d}}\Cell{ss10}{\texttt{a}}\Cell{ss11}{\texttt{e}}\Cell{ss12}{\texttt{c}}\Cell{ss13}{\texttt{b}}} % tk[1]
+              {} % tk[2]
+              {} % tk[3]
+              {\Fill[unknown]{ss00}\Fill[unknown]{ss03}\Fill[unknown]{ss22}\Fill[unknown]{ss31}} % state (after subcells)
+              {\Fill[unknown]{ss00}\Fill[unknown]{ss03}\Fill[unknown]{ss22}\Fill[unknown]{ss31}} % state (after addtweakey)
+              {\Fill[unknown]{ss00}\Fill[unknown]{ss03}\Fill[unknown]{ss20}\Fill[unknown]{ss30}} % state (after shiftrows)
+
+\SkinnyNewLine[2]{\Fill[unknown]{ss00}\Fill[unknown]{ss10}\Fill[unknown]{ss13}\Fill[unknown]{ss30}} % state (after mixcols)
+\SkinnyRoundTK[2]
+              {\Fill[unknown]{ss00}\Fill[unknown]{ss10}\Fill[unknown]{ss13}\Fill[unknown]{ss30}} % state (input)
+              {\Fill[unknown]{ss00}\Fill[unknown]{ss00}\Fill[unknown]{ss10}\Fill[unknown]{ss13}\Cell{ss00}{\texttt{1}}\Cell{ss01}{\texttt{7}}\Cell{ss02}{\texttt{0}}\Cell{ss03}{\texttt{5}}\Cell{ss10}{\texttt{2}}\Cell{ss11}{\texttt{6}}\Cell{ss12}{\texttt{4}}\Cell{ss13}{\texttt{3}}} % tk[1]
+              {} % tk[2]
+              {} % tk[3]
+              {\Fill[unknown]{ss00}\Fill[unknown]{ss10}\Fill[unknown]{ss13}\Fill[unknown]{ss30}} % state (after subcells)
+              {\Fill[unknown]{ss00}\Fill[unknown]{ss10}\Fill[unknown]{ss13}\Fill[unknown]{ss30}} % state (after addtweakey)
+              {\Fill[unknown]{ss00}\Fill[unknown]{ss11}\Fill[unknown]{ss10}\Fill[unknown]{ss33}} % state (after shiftrows)
+
+\SkinnyRoundTK[3]
+              {\Fill[unknown]{ss03}\Fill[unknown]{ss10}\Fill[unknown]{ss11}\Fill[unknown]{ss20}\Fill[unknown]{ss21}\Fill[unknown]{ss30}\Fill[unknown]{ss31}\Fill[unknown]{ss33}} % state (input)
+              {\Fill[unknown]{ss03}\Fill[unknown]{ss03}\Fill[unknown]{ss10}\Fill[unknown]{ss11}\Cell{ss00}{\texttt{f}}\Cell{ss01}{\texttt{b}}\Cell{ss02}{\texttt{9}}\Cell{ss03}{\texttt{e}}\Cell{ss10}{\texttt{8}}\Cell{ss11}{\texttt{c}}\Cell{ss12}{\texttt{a}}\Cell{ss13}{\texttt{d}}} % tk[1]
+              {} % tk[2]
+              {} % tk[3]
+              {\Fill[unknown]{ss03}\Fill[unknown]{ss10}\Fill[unknown]{ss11}\Fill[unknown]{ss20}\Fill[unknown]{ss21}\Fill[unknown]{ss30}\Fill[unknown]{ss31}\Fill[unknown]{ss33}} % state (after subcells)
+              {\Fill[unknown]{ss03}\Fill[unknown]{ss10}\Fill[unknown]{ss11}\Fill[unknown]{ss20}\Fill[unknown]{ss21}\Fill[unknown]{ss30}\Fill[unknown]{ss31}\Fill[unknown]{ss33}} % state (after addtweakey)
+              {\Fill[unknown]{ss03}\Fill[unknown]{ss11}\Fill[unknown]{ss12}\Fill[unknown]{ss22}\Fill[unknown]{ss23}\Fill[unknown]{ss33}\Fill[unknown]{ss30}\Fill[unknown]{ss32}} % state (after shiftrows)
+
+\SkinnyNewLine[4]{\Fill[unknown]{ss00}\Fill[unknown]{ss02}\Fill[unknown]{ss03}\Fill[unknown]{ss11}\Fill[unknown]{ss12}\Fill[unknown]{ss13}\Fill[unknown]{ss21}\Fill[unknown]{ss22}\Fill[unknown]{ss30}\Fill[unknown]{ss31}\Fill[unknown]{ss32}\Fill[unknown]{ss33}} % state (after mixcols)
+\SkinnyRoundTK[4]
+              {\Fill[unknown]{ss00}\Fill[unknown]{ss02}\Fill[unknown]{ss03}\Fill[unknown]{ss11}\Fill[unknown]{ss12}\Fill[unknown]{ss13}\Fill[unknown]{ss21}\Fill[unknown]{ss22}\Fill[unknown]{ss30}\Fill[unknown]{ss31}\Fill[unknown]{ss32}\Fill[unknown]{ss33}} % state (input)
+              {\Fill[unknown]{ss00}\Fill[unknown]{ss02}\Fill[unknown]{ss03}\Fill[unknown]{ss00}\Fill[unknown]{ss02}\Fill[unknown]{ss03}\Fill[unknown]{ss11}\Fill[unknown]{ss12}\Fill[unknown]{ss13}\Cell{ss00}{\texttt{7}}\Cell{ss01}{\texttt{3}}\Cell{ss02}{\texttt{1}}\Cell{ss03}{\texttt{6}}\Cell{ss10}{\texttt{0}}\Cell{ss11}{\texttt{4}}\Cell{ss12}{\texttt{2}}\Cell{ss13}{\texttt{5}}} % tk[1]
+              {} % tk[2]
+              {} % tk[3]
+              {\Fill[unknown]{ss00}\Fill[unknown]{ss02}\Fill[unknown]{ss03}\Fill[unknown]{ss11}\Fill[unknown]{ss12}\Fill[unknown]{ss13}\Fill[unknown]{ss21}\Fill[unknown]{ss22}\Fill[unknown]{ss30}\Fill[unknown]{ss31}\Fill[unknown]{ss32}\Fill[unknown]{ss33}} % state (after subcells)
+              {\Fill[unknown]{ss00}\Fill[unknown]{ss02}\Fill[unknown]{ss03}\Fill[unknown]{ss11}\Fill[unknown]{ss12}\Fill[unknown]{ss13}\Fill[unknown]{ss21}\Fill[unknown]{ss22}\Fill[unknown]{ss30}\Fill[unknown]{ss31}\Fill[unknown]{ss32}\Fill[unknown]{ss33}} % state (after addtweakey)
+              {\Fill[unknown]{ss00}\Fill[unknown]{ss02}\Fill[unknown]{ss03}\Fill[unknown]{ss12}\Fill[unknown]{ss13}\Fill[unknown]{ss10}\Fill[unknown]{ss23}\Fill[unknown]{ss20}\Fill[unknown]{ss33}\Fill[unknown]{ss30}\Fill[unknown]{ss31}\Fill[unknown]{ss32}} % state (after shiftrows)
+
+\SkinnyRoundTK[5]
+              {\Fill[unknown]{ss00}\Fill[unknown]{ss01}\Fill[unknown]{ss02}\Fill[unknown]{ss03}\Fill[unknown]{ss10}\Fill[unknown]{ss12}\Fill[unknown]{ss13}\Fill[unknown]{ss20}\Fill[unknown]{ss22}\Fill[unknown]{ss23}\Fill[unknown]{ss30}\Fill[unknown]{ss31}\Fill[unknown]{ss32}\Fill[unknown]{ss33}} % state (input)
+              {\Fill[unknown]{ss00}\Fill[unknown]{ss01}\Fill[unknown]{ss02}\Fill[unknown]{ss03}\Fill[unknown]{ss00}\Fill[unknown]{ss01}\Fill[unknown]{ss02}\Fill[unknown]{ss03}\Fill[unknown]{ss10}\Fill[unknown]{ss12}\Fill[unknown]{ss13}\Cell{ss00}{\texttt{b}}\Cell{ss01}{\texttt{d}}\Cell{ss02}{\texttt{f}}\Cell{ss03}{\texttt{c}}\Cell{ss10}{\texttt{9}}\Cell{ss11}{\texttt{a}}\Cell{ss12}{\texttt{8}}\Cell{ss13}{\texttt{e}}} % tk[1]
+              {} % tk[2]
+              {} % tk[3]
+              {\Fill[unknown]{ss00}\Fill[unknown]{ss01}\Fill[unknown]{ss02}\Fill[unknown]{ss03}\Fill[unknown]{ss10}\Fill[unknown]{ss12}\Fill[unknown]{ss13}\Fill[unknown]{ss20}\Fill[unknown]{ss22}\Fill[unknown]{ss23}\Fill[unknown]{ss30}\Fill[unknown]{ss31}\Fill[unknown]{ss32}\Fill[unknown]{ss33}} % state (after subcells)
+              {\Fill[unknown]{ss00}\Fill[unknown]{ss01}\Fill[unknown]{ss02}\Fill[unknown]{ss03}\Fill[unknown]{ss10}\Fill[unknown]{ss12}\Fill[unknown]{ss13}\Fill[unknown]{ss20}\Fill[unknown]{ss22}\Fill[unknown]{ss23}\Fill[unknown]{ss30}\Fill[unknown]{ss31}\Fill[unknown]{ss32}\Fill[unknown]{ss33}} % state (after addtweakey)
+              {\Fill[unknown]{ss00}\Fill[unknown]{ss01}\Fill[unknown]{ss02}\Fill[unknown]{ss03}\Fill[unknown]{ss11}\Fill[unknown]{ss13}\Fill[unknown]{ss10}\Fill[unknown]{ss22}\Fill[unknown]{ss20}\Fill[unknown]{ss21}\Fill[unknown]{ss33}\Fill[unknown]{ss30}\Fill[unknown]{ss31}\Fill[unknown]{ss32}} % state (after shiftrows)
+
+\SkinnyNewLine[6]{\Fill[unknown]{ss00}\Fill[unknown]{ss01}\Fill[unknown]{ss02}\Fill[unknown]{ss03}\Fill[unknown]{ss10}\Fill[unknown]{ss11}\Fill[unknown]{ss12}\Fill[unknown]{ss13}\Fill[unknown]{ss20}\Fill[unknown]{ss21}\Fill[unknown]{ss23}\Fill[unknown]{ss30}\Fill[unknown]{ss31}\Fill[unknown]{ss32}\Fill[unknown]{ss33}} % state (after mixcols)
+\SkinnyRoundTK[6]
+              {\Fill[unknown]{ss00}\Fill[unknown]{ss01}\Fill[unknown]{ss02}\Fill[unknown]{ss03}\Fill[unknown]{ss10}\Fill[unknown]{ss11}\Fill[unknown]{ss12}\Fill[unknown]{ss13}\Fill[unknown]{ss20}\Fill[unknown]{ss21}\Fill[unknown]{ss23}\Fill[unknown]{ss30}\Fill[unknown]{ss31}\Fill[unknown]{ss32}\Fill[unknown]{ss33}} % state (input)
+              {\Fill[unknown]{ss00}\Fill[unknown]{ss01}\Fill[unknown]{ss02}\Fill[unknown]{ss03}\Fill[unknown]{ss00}\Fill[unknown]{ss01}\Fill[unknown]{ss02}\Fill[unknown]{ss03}\Fill[unknown]{ss10}\Fill[unknown]{ss11}\Fill[unknown]{ss12}\Fill[unknown]{ss13}\Cell{ss00}{\texttt{3}}\Cell{ss01}{\texttt{5}}\Cell{ss02}{\texttt{7}}\Cell{ss03}{\texttt{4}}\Cell{ss10}{\texttt{1}}\Cell{ss11}{\texttt{2}}\Cell{ss12}{\texttt{0}}\Cell{ss13}{\texttt{6}}} % tk[1]
+              {} % tk[2]
+              {} % tk[3]
+              {\Fill[unknown]{ss00}\Fill[unknown]{ss01}\Fill[unknown]{ss02}\Fill[unknown]{ss03}\Fill[unknown]{ss10}\Fill[unknown]{ss11}\Fill[unknown]{ss12}\Fill[unknown]{ss13}\Fill[unknown]{ss20}\Fill[unknown]{ss21}\Fill[unknown]{ss23}\Fill[unknown]{ss30}\Fill[unknown]{ss31}\Fill[unknown]{ss32}\Fill[unknown]{ss33}} % state (after subcells)
+              {\Fill[unknown]{ss00}\Fill[unknown]{ss01}\Fill[unknown]{ss02}\Fill[unknown]{ss03}\Fill[unknown]{ss10}\Fill[unknown]{ss11}\Fill[unknown]{ss12}\Fill[unknown]{ss13}\Fill[unknown]{ss20}\Fill[unknown]{ss21}\Fill[unknown]{ss23}\Fill[unknown]{ss30}\Fill[unknown]{ss31}\Fill[unknown]{ss32}\Fill[unknown]{ss33}} % state (after addtweakey)
+              {\Fill[unknown]{ss00}\Fill[unknown]{ss01}\Fill[unknown]{ss02}\Fill[unknown]{ss03}\Fill[unknown]{ss11}\Fill[unknown]{ss12}\Fill[unknown]{ss13}\Fill[unknown]{ss10}\Fill[unknown]{ss22}\Fill[unknown]{ss23}\Fill[unknown]{ss21}\Fill[unknown]{ss33}\Fill[unknown]{ss30}\Fill[unknown]{ss31}\Fill[unknown]{ss32}} % state (after shiftrows)
+
+\SkinnyFin[7]{\Fill[unknown]{ss00}\Fill[unknown]{ss01}\Fill[unknown]{ss02}\Fill[unknown]{ss03}\Fill[unknown]{ss10}\Fill[unknown]{ss11}\Fill[unknown]{ss12}\Fill[unknown]{ss13}\Fill[unknown]{ss20}\Fill[unknown]{ss21}\Fill[unknown]{ss22}\Fill[unknown]{ss23}\Fill[unknown]{ss30}\Fill[unknown]{ss31}\Fill[unknown]{ss32}\Fill[unknown]{ss33}} % state (after mixcols)
+
+\end{tikzpicture}
+\bigskip
+
+\begin{tikzpicture}
+
+\SkinnyInit{}{}{}{}
+
+\SkinnyRoundTK[7]
+              {\Fill[unknown]{ss00}\Fill[unknown]{ss01}\Fill[unknown]{ss02}\Fill[unknown]{ss03}\Fill[unknown]{ss10}\Fill[unknown]{ss11}\Fill[unknown]{ss12}\Fill[unknown]{ss13}\Fill[unknown]{ss20}\Fill[unknown]{ss21}\Fill[unknown]{ss22}\Fill[unknown]{ss23}\Fill[unknown]{ss30}\Fill[unknown]{ss31}\Fill[unknown]{ss32}\Fill[unknown]{ss33}} % state (input)
+              {\Fill[unknown]{ss00}\Fill[unknown]{ss01}\Fill[unknown]{ss02}\Fill[unknown]{ss03}\Fill[unknown]{ss00}\Fill[unknown]{ss01}\Fill[unknown]{ss02}\Fill[unknown]{ss03}\Fill[unknown]{ss10}\Fill[unknown]{ss11}\Fill[unknown]{ss12}\Fill[unknown]{ss13}\Cell{ss00}{\texttt{d}}\Cell{ss01}{\texttt{e}}\Cell{ss02}{\texttt{b}}\Cell{ss03}{\texttt{a}}\Cell{ss10}{\texttt{f}}\Cell{ss11}{\texttt{8}}\Cell{ss12}{\texttt{9}}\Cell{ss13}{\texttt{c}}} % tk[1]
+              {} % tk[2]
+              {} % tk[3]
+              {\Fill[unknown]{ss00}\Fill[unknown]{ss01}\Fill[unknown]{ss02}\Fill[unknown]{ss03}\Fill[unknown]{ss10}\Fill[unknown]{ss11}\Fill[unknown]{ss12}\Fill[unknown]{ss13}\Fill[unknown]{ss20}\Fill[unknown]{ss21}\Fill[unknown]{ss22}\Fill[unknown]{ss23}\Fill[unknown]{ss30}\Fill[unknown]{ss31}\Fill[unknown]{ss32}\Fill[unknown]{ss33}} % state (after subcells)
+              {\Fill[unknown]{ss00}\Fill[unknown]{ss01}\Fill[unknown]{ss02}\Fill[unknown]{ss03}\Fill[unknown]{ss10}\Fill[unknown]{ss11}\Fill[unknown]{ss12}\Fill[unknown]{ss13}\Fill[unknown]{ss20}\Fill[unknown]{ss21}\Fill[unknown]{ss22}\Fill[unknown]{ss23}\Fill[unknown]{ss30}\Fill[unknown]{ss31}\Fill[unknown]{ss32}\Fill[unknown]{ss33}} % state (after addtweakey)
+              {\Fill[unknown]{ss00}\Fill[unknown]{ss01}\Fill[unknown]{ss02}\Fill[unknown]{ss03}\Fill[unknown]{ss11}\Fill[unknown]{ss12}\Fill[unknown]{ss13}\Fill[unknown]{ss10}\Fill[unknown]{ss22}\Fill[unknown]{ss23}\Fill[unknown]{ss20}\Fill[unknown]{ss21}\Fill[unknown]{ss33}\Fill[unknown]{ss30}\Fill[unknown]{ss31}\Fill[unknown]{ss32}} % state (after shiftrows)
+
+\SkinnyNewLine[8]{\Fill[unknown]{ss00}\Fill[unknown]{ss01}\Fill[unknown]{ss02}\Fill[unknown]{ss03}\Fill[unknown]{ss10}\Fill[unknown]{ss11}\Fill[unknown]{ss12}\Fill[unknown]{ss13}\Fill[unknown]{ss20}\Fill[unknown]{ss21}\Fill[unknown]{ss22}\Fill[unknown]{ss23}\Fill[unknown]{ss30}\Fill[unknown]{ss31}\Fill[unknown]{ss32}\Fill[unknown]{ss33}} % state (after mixcols)
+\SkinnyRoundTK[8]
+              {\Fill[unknown]{ss00}\Fill[unknown]{ss01}\Fill[unknown]{ss02}\Fill[unknown]{ss03}\Fill[unknown]{ss10}\Fill[unknown]{ss11}\Fill[unknown]{ss12}\Fill[unknown]{ss13}\Fill[unknown]{ss20}\Fill[unknown]{ss21}\Fill[unknown]{ss22}\Fill[unknown]{ss23}\Fill[unknown]{ss30}\Fill[unknown]{ss31}\Fill[unknown]{ss32}\Fill[unknown]{ss33}} % state (input)
+              {\Fill[unknown]{ss00}\Fill[unknown]{ss01}\Fill[unknown]{ss02}\Fill[unknown]{ss03}\Fill[unknown]{ss00}\Fill[unknown]{ss01}\Fill[unknown]{ss02}\Fill[unknown]{ss03}\Fill[unknown]{ss10}\Fill[unknown]{ss11}\Fill[unknown]{ss12}\Fill[unknown]{ss13}\Cell{ss00}{\texttt{5}}\Cell{ss01}{\texttt{6}}\Cell{ss02}{\texttt{3}}\Cell{ss03}{\texttt{2}}\Cell{ss10}{\texttt{7}}\Cell{ss11}{\texttt{0}}\Cell{ss12}{\texttt{1}}\Cell{ss13}{\texttt{4}}} % tk[1]
+              {} % tk[2]
+              {} % tk[3]
+              {\Fill[unknown]{ss00}\Fill[unknown]{ss01}\Fill[unknown]{ss02}\Fill[unknown]{ss03}\Fill[unknown]{ss10}\Fill[unknown]{ss11}\Fill[unknown]{ss12}\Fill[unknown]{ss13}\Fill[unknown]{ss20}\Fill[unknown]{ss21}\Fill[unknown]{ss22}\Fill[unknown]{ss23}\Fill[unknown]{ss30}\Fill[unknown]{ss31}\Fill[unknown]{ss32}\Fill[unknown]{ss33}} % state (after subcells)
+              {\Fill[unknown]{ss00}\Fill[unknown]{ss01}\Fill[unknown]{ss02}\Fill[unknown]{ss03}\Fill[unknown]{ss10}\Fill[unknown]{ss11}\Fill[unknown]{ss12}\Fill[unknown]{ss13}\Fill[unknown]{ss20}\Fill[unknown]{ss21}\Fill[unknown]{ss22}\Fill[unknown]{ss23}\Fill[unknown]{ss30}\Fill[unknown]{ss31}\Fill[unknown]{ss32}\Fill[unknown]{ss33}} % state (after addtweakey)
+              {\Fill[unknown]{ss00}\Fill[unknown]{ss01}\Fill[unknown]{ss02}\Fill[unknown]{ss03}\Fill[unknown]{ss11}\Fill[unknown]{ss12}\Fill[unknown]{ss13}\Fill[unknown]{ss10}\Fill[unknown]{ss22}\Fill[unknown]{ss23}\Fill[unknown]{ss20}\Fill[unknown]{ss21}\Fill[unknown]{ss33}\Fill[unknown]{ss30}\Fill[unknown]{ss31}\Fill[unknown]{ss32}} % state (after shiftrows)
+
+\SkinnyRoundTK[9]
+              {\Fill[unknown]{ss00}\Fill[unknown]{ss01}\Fill[unknown]{ss02}\Fill[unknown]{ss03}\Fill[unknown]{ss10}\Fill[unknown]{ss11}\Fill[unknown]{ss12}\Fill[unknown]{ss13}\Fill[unknown]{ss20}\Fill[unknown]{ss21}\Fill[unknown]{ss22}\Fill[unknown]{ss23}\Fill[unknown]{ss30}\Fill[unknown]{ss31}\Fill[unknown]{ss32}\Fill[unknown]{ss33}} % state (input)
+              {\Fill[unknown]{ss00}\Fill[unknown]{ss01}\Fill[unknown]{ss02}\Fill[unknown]{ss03}\Fill[unknown]{ss00}\Fill[unknown]{ss01}\Fill[unknown]{ss02}\Fill[unknown]{ss03}\Fill[unknown]{ss10}\Fill[unknown]{ss11}\Fill[unknown]{ss12}\Fill[unknown]{ss13}\Cell{ss00}{\texttt{e}}\Cell{ss01}{\texttt{c}}\Cell{ss02}{\texttt{d}}\Cell{ss03}{\texttt{8}}\Cell{ss10}{\texttt{b}}\Cell{ss11}{\texttt{9}}\Cell{ss12}{\texttt{f}}\Cell{ss13}{\texttt{a}}} % tk[1]
+              {} % tk[2]
+              {} % tk[3]
+              {\Fill[unknown]{ss00}\Fill[unknown]{ss01}\Fill[unknown]{ss02}\Fill[unknown]{ss03}\Fill[unknown]{ss10}\Fill[unknown]{ss11}\Fill[unknown]{ss12}\Fill[unknown]{ss13}\Fill[unknown]{ss20}\Fill[unknown]{ss21}\Fill[unknown]{ss22}\Fill[unknown]{ss23}\Fill[unknown]{ss30}\Fill[unknown]{ss31}\Fill[unknown]{ss32}\Fill[unknown]{ss33}} % state (after subcells)
+              {\Fill[unknown]{ss00}\Fill[unknown]{ss01}\Fill[unknown]{ss02}\Fill[unknown]{ss03}\Fill[unknown]{ss10}\Fill[unknown]{ss11}\Fill[unknown]{ss12}\Fill[unknown]{ss13}\Fill[unknown]{ss20}\Fill[unknown]{ss21}\Fill[unknown]{ss22}\Fill[unknown]{ss23}\Fill[unknown]{ss30}\Fill[unknown]{ss31}\Fill[unknown]{ss32}\Fill[unknown]{ss33}} % state (after addtweakey)
+              {\Fill[unknown]{ss00}\Fill[unknown]{ss01}\Fill[unknown]{ss02}\Fill[unknown]{ss03}\Fill[unknown]{ss11}\Fill[unknown]{ss12}\Fill[unknown]{ss13}\Fill[unknown]{ss10}\Fill[unknown]{ss22}\Fill[unknown]{ss23}\Fill[unknown]{ss20}\Fill[unknown]{ss21}\Fill[unknown]{ss33}\Fill[unknown]{ss30}\Fill[unknown]{ss31}\Fill[unknown]{ss32}} % state (after shiftrows)
+
+\SkinnyNewLine[10]{\Fill[unknown]{ss00}\Fill[unknown]{ss01}\Fill[unknown]{ss02}\Fill[unknown]{ss03}\Fill[unknown]{ss10}\Fill[unknown]{ss11}\Fill[unknown]{ss12}\Fill[unknown]{ss13}\Fill[unknown]{ss20}\Fill[unknown]{ss21}\Fill[unknown]{ss22}\Fill[unknown]{ss23}\Fill[unknown]{ss30}\Fill[unknown]{ss31}\Fill[nonzeroany]{ss32}\Fill[unknown]{ss33}} % state (after mixcols)
+\SkinnyRoundTK[10]
+              {\Fill[unknown]{ss00}\Fill[unknown]{ss01}\Fill[unknown]{ss02}\Fill[unknown]{ss03}\Fill[unknown]{ss10}\Fill[unknown]{ss11}\Fill[unknown]{ss12}\Fill[unknown]{ss13}\Fill[unknown]{ss20}\Fill[unknown]{ss21}\Fill[unknown]{ss22}\Fill[unknown]{ss23}\Fill[unknown]{ss30}\Fill[unknown]{ss31}\Fill[nonzeroany]{ss32}\Fill[unknown]{ss33}} % state (input)
+              {\Fill[unknown]{ss00}\Fill[unknown]{ss01}\Fill[unknown]{ss02}\Fill[unknown]{ss03}\Fill[unknown]{ss00}\Fill[unknown]{ss01}\Fill[unknown]{ss02}\Fill[unknown]{ss03}\Fill[unknown]{ss10}\Fill[unknown]{ss11}\Fill[unknown]{ss12}\Fill[unknown]{ss13}\Cell{ss00}{\texttt{6}}\Cell{ss01}{\texttt{4}}\Cell{ss02}{\texttt{5}}\Cell{ss03}{\texttt{0}}\Cell{ss10}{\texttt{3}}\Cell{ss11}{\texttt{1}}\Cell{ss12}{\texttt{7}}\Cell{ss13}{\texttt{2}}} % tk[1]
+              {} % tk[2]
+              {} % tk[3]
+              {\Fill[unknown]{ss00}\Fill[unknown]{ss01}\Fill[unknown]{ss02}\Fill[unknown]{ss03}\Fill[unknown]{ss10}\Fill[unknown]{ss11}\Fill[unknown]{ss12}\Fill[unknown]{ss13}\Fill[unknown]{ss20}\Fill[unknown]{ss21}\Fill[unknown]{ss22}\Fill[unknown]{ss23}\Fill[unknown]{ss30}\Fill[unknown]{ss31}\Fill[nonzeroany]{ss32}\Fill[unknown]{ss33}} % state (after subcells)
+              {\Fill[unknown]{ss00}\Fill[unknown]{ss01}\Fill[unknown]{ss02}\Fill[unknown]{ss03}\Fill[unknown]{ss10}\Fill[unknown]{ss11}\Fill[unknown]{ss12}\Fill[unknown]{ss13}\Fill[unknown]{ss20}\Fill[unknown]{ss21}\Fill[unknown]{ss22}\Fill[unknown]{ss23}\Fill[unknown]{ss30}\Fill[unknown]{ss31}\Fill[nonzeroany]{ss32}\Fill[unknown]{ss33}} % state (after addtweakey)
+              {\Fill[unknown]{ss00}\Fill[unknown]{ss01}\Fill[unknown]{ss02}\Fill[unknown]{ss03}\Fill[unknown]{ss11}\Fill[unknown]{ss12}\Fill[unknown]{ss13}\Fill[unknown]{ss10}\Fill[unknown]{ss22}\Fill[unknown]{ss23}\Fill[unknown]{ss20}\Fill[unknown]{ss21}\Fill[unknown]{ss33}\Fill[unknown]{ss30}\Fill[nonzeroany]{ss31}\Fill[unknown]{ss32}} % state (after shiftrows)
+
+\SkinnyRoundTK[11]
+              {\Fill[unknown]{ss00}\Fill[nonzeroany]{ss01}\Fill[unknown]{ss02}\Fill[unknown]{ss03}\Fill[unknown]{ss10}\Fill[nonzeroany]{ss11}\Fill[unknown]{ss12}\Fill[unknown]{ss13}\Fill[unknown]{ss20}\Fill[unknown]{ss21}\Fill[unknown]{ss22}\Fill[unknown]{ss23}\Fill[nonzeroany]{ss31}\Fill[nonzeroany]{ss32}\Fill[unknown]{ss33}} % state (input)
+              {\Fill[unknown]{ss00}\Fill[nonzeroany]{ss01}\Fill[unknown]{ss02}\Fill[unknown]{ss03}\Fill[unknown]{ss00}\Fill[nonzeroany]{ss01}\Fill[unknown]{ss02}\Fill[unknown]{ss03}\Fill[unknown]{ss10}\Fill[nonzeroany]{ss11}\Fill[unknown]{ss12}\Fill[unknown]{ss13}\Cell{ss00}{\texttt{c}}\Cell{ss01}{\texttt{a}}\Cell{ss02}{\texttt{e}}\Cell{ss03}{\texttt{9}}\Cell{ss10}{\texttt{d}}\Cell{ss11}{\texttt{f}}\Cell{ss12}{\texttt{b}}\Cell{ss13}{\texttt{8}}} % tk[1]
+              {} % tk[2]
+              {} % tk[3]
+              {\Fill[unknown]{ss00}\Fill[nonzeroany]{ss01}\Fill[unknown]{ss02}\Fill[unknown]{ss03}\Fill[unknown]{ss10}\Fill[nonzeroany]{ss11}\Fill[unknown]{ss12}\Fill[unknown]{ss13}\Fill[unknown]{ss20}\Fill[unknown]{ss21}\Fill[unknown]{ss22}\Fill[unknown]{ss23}\Fill[nonzeroany]{ss31}\Fill[nonzeroany]{ss32}\Fill[unknown]{ss33}} % state (after subcells)
+              {\Fill[unknown]{ss00}\Fill[nonzeroany]{ss01}\Fill[unknown]{ss02}\Fill[unknown]{ss03}\Fill[unknown]{ss10}\Fill[nonzeroany]{ss11}\Fill[unknown]{ss12}\Fill[unknown]{ss13}\Fill[unknown]{ss20}\Fill[unknown]{ss21}\Fill[unknown]{ss22}\Fill[unknown]{ss23}\Fill[nonzeroany]{ss31}\Fill[nonzeroany]{ss32}\Fill[unknown]{ss33}} % state (after addtweakey)
+              {\Fill[unknown]{ss00}\Fill[nonzeroany]{ss01}\Fill[unknown]{ss02}\Fill[unknown]{ss03}\Fill[unknown]{ss11}\Fill[nonzeroany]{ss12}\Fill[unknown]{ss13}\Fill[unknown]{ss10}\Fill[unknown]{ss22}\Fill[unknown]{ss23}\Fill[unknown]{ss20}\Fill[unknown]{ss21}\Fill[nonzeroany]{ss30}\Fill[nonzeroany]{ss31}\Fill[unknown]{ss32}} % state (after shiftrows)
+
+\SkinnyNewLine[12]{\Fill[nonzeroany]{ss00}\Fill[nonzeroany]{ss01}\Fill[unknown]{ss02}\Fill[nonzeroany]{ss10}\Fill[unknown]{ss12}\Fill[nonzeroany]{ss13}\Fill[unknown]{ss20}\Fill[unknown]{ss21}\Fill[nonzeroany]{ss22}\Fill[unknown]{ss23}\Fill[nonzeroany]{ss32}\Fill[unknown]{ss33}} % state (after mixcols)
+\SkinnyRoundTK[12]
+              {\Fill[nonzeroany]{ss00}\Fill[nonzeroany]{ss01}\Fill[unknown]{ss02}\Fill[nonzeroany]{ss10}\Fill[unknown]{ss12}\Fill[nonzeroany]{ss13}\Fill[unknown]{ss20}\Fill[unknown]{ss21}\Fill[nonzeroany]{ss22}\Fill[unknown]{ss23}\Fill[nonzeroany]{ss32}\Fill[unknown]{ss33}} % state (input)
+              {\Fill[nonzeroany]{ss00}\Fill[nonzeroany]{ss01}\Fill[unknown]{ss02}\Fill[nonzeroany]{ss00}\Fill[nonzeroany]{ss01}\Fill[unknown]{ss02}\Fill[nonzeroany]{ss10}\Fill[unknown]{ss12}\Fill[nonzeroany]{ss13}\Cell{ss00}{\texttt{4}}\Cell{ss01}{\texttt{2}}\Cell{ss02}{\texttt{6}}\Cell{ss03}{\texttt{1}}\Cell{ss10}{\texttt{5}}\Cell{ss11}{\texttt{7}}\Cell{ss12}{\texttt{3}}\Cell{ss13}{\texttt{0}}} % tk[1]
+              {} % tk[2]
+              {} % tk[3]
+              {\Fill[nonzeroany]{ss00}\Fill[nonzeroany]{ss01}\Fill[unknown]{ss02}\Fill[nonzeroany]{ss10}\Fill[unknown]{ss12}\Fill[nonzeroany]{ss13}\Fill[unknown]{ss20}\Fill[unknown]{ss21}\Fill[nonzeroany]{ss22}\Fill[unknown]{ss23}\Fill[nonzeroany]{ss32}\Fill[unknown]{ss33}} % state (after subcells)
+              {\Fill[nonzeroany]{ss00}\Fill[nonzeroany]{ss01}\Fill[unknown]{ss02}\Fill[nonzeroany]{ss10}\Fill[unknown]{ss12}\Fill[nonzeroany]{ss13}\Fill[unknown]{ss20}\Fill[unknown]{ss21}\Fill[nonzeroany]{ss22}\Fill[unknown]{ss23}\Fill[nonzeroany]{ss32}\Fill[unknown]{ss33}} % state (after addtweakey)
+              {\Fill[nonzeroany]{ss00}\Fill[nonzeroany]{ss01}\Fill[unknown]{ss02}\Fill[nonzeroany]{ss11}\Fill[unknown]{ss13}\Fill[nonzeroany]{ss10}\Fill[unknown]{ss22}\Fill[unknown]{ss23}\Fill[nonzeroany]{ss20}\Fill[unknown]{ss21}\Fill[nonzeroany]{ss31}\Fill[unknown]{ss32}} % state (after shiftrows)
+
+\SkinnyRoundTK[13]
+              {\Fill[nonzeroany]{ss01}\Fill[unknown]{ss02}\Fill[nonzeroany]{ss10}\Fill[nonzeroany]{ss12}\Fill[nonzeroany]{ss20}\Fill[nonzeroany]{ss21}\Fill[unknown]{ss23}\Fill[nonzeroany]{ss32}} % state (input)
+              {\Fill[nonzeroany]{ss01}\Fill[unknown]{ss02}\Fill[nonzeroany]{ss01}\Fill[unknown]{ss02}\Fill[nonzeroany]{ss10}\Fill[nonzeroany]{ss12}\Cell{ss00}{\texttt{a}}\Cell{ss01}{\texttt{8}}\Cell{ss02}{\texttt{c}}\Cell{ss03}{\texttt{f}}\Cell{ss10}{\texttt{e}}\Cell{ss11}{\texttt{b}}\Cell{ss12}{\texttt{d}}\Cell{ss13}{\texttt{9}}} % tk[1]
+              {} % tk[2]
+              {} % tk[3]
+              {\Fill[nonzeroany]{ss01}\Fill[unknown]{ss02}\Fill[nonzeroany]{ss10}\Fill[nonzeroany]{ss12}\Fill[nonzeroany]{ss20}\Fill[nonzeroany]{ss21}\Fill[unknown]{ss23}\Fill[nonzeroany]{ss32}} % state (after subcells)
+              {\Fill[nonzeroany]{ss01}\Fill[unknown]{ss02}\Fill[nonzeroany]{ss10}\Fill[nonzeroany]{ss12}\Fill[nonzeroany]{ss20}\Fill[nonzeroany]{ss21}\Fill[unknown]{ss23}\Fill[nonzeroany]{ss32}} % state (after addtweakey)
+              {\Fill[nonzeroany]{ss01}\Fill[unknown]{ss02}\Fill[nonzeroany]{ss11}\Fill[nonzeroany]{ss13}\Fill[nonzeroany]{ss22}\Fill[nonzeroany]{ss23}\Fill[unknown]{ss21}\Fill[nonzeroany]{ss31}} % state (after shiftrows)
+
+\SkinnyNewLine[14]{\Fill[nonzeroany]{ss01}\Fill[nonzeroany]{ss12}\Fill[nonzeroany]{ss21}\Fill[nonzeroany]{ss23}\Fill[nonzeroany]{ss32}} % state (after mixcols)
+\SkinnyRoundTK[14]
+              {\Fill[nonzeroany]{ss01}\Fill[nonzeroany]{ss12}\Fill[nonzeroany]{ss21}\Fill[nonzeroany]{ss23}\Fill[nonzeroany]{ss32}} % state (input)
+              {\Fill[nonzeroany]{ss01}\Fill[nonzeroany]{ss01}\Fill[nonzeroany]{ss12}\Cell{ss00}{\texttt{2}}\Cell{ss01}{\texttt{0}}\Cell{ss02}{\texttt{4}}\Cell{ss03}{\texttt{7}}\Cell{ss10}{\texttt{6}}\Cell{ss11}{\texttt{3}}\Cell{ss12}{\texttt{5}}\Cell{ss13}{\texttt{1}}} % tk[1]
+              {} % tk[2]
+              {} % tk[3]
+              {\Fill[nonzeroany]{ss01}\Fill[nonzeroany]{ss12}\Fill[nonzeroany]{ss21}\Fill[nonzeroany]{ss23}\Fill[nonzeroany]{ss32}} % state (after subcells)
+              {\Fill[nonzeroany]{ss01}\Fill[nonzeroany]{ss12}\Fill[nonzeroany]{ss21}\Fill[nonzeroany]{ss23}\Fill[nonzeroany]{ss32}} % state (after addtweakey)
+              {\Fill[nonzeroany]{ss01}\Fill[nonzeroany]{ss13}\Fill[nonzeroany]{ss23}\Fill[nonzeroany]{ss21}\Fill[nonzeroany]{ss31}} % state (after shiftrows)
+
+\SkinnyRoundTK[15]
+              {\Fill[nonzeroany]{ss01}\Fill[nonzeroany]{ss23}} % state (input)
+              {\Fill[nonzeroany]{ss01}\Fill[nonzeroany]{ss01}\Cell{ss00}{\texttt{8}}\Cell{ss01}{\texttt{9}}\Cell{ss02}{\texttt{a}}\Cell{ss03}{\texttt{b}}\Cell{ss10}{\texttt{c}}\Cell{ss11}{\texttt{d}}\Cell{ss12}{\texttt{e}}\Cell{ss13}{\texttt{f}}} % tk[1]
+              {} % tk[2]
+              {} % tk[3]
+              {\Fill[nonzeroany]{ss01}\Fill[nonzeroany]{ss23}} % state (after subcells)
+              {\Fill[nonzeroany]{ss01}\Fill[nonzeroany]{ss23}} % state (after addtweakey)
+              {\Fill[nonzeroany]{ss01}\Fill[nonzeroany]{ss21}} % state (after shiftrows)
+
+\SkinnyNewLine[16]{\Fill[nonzeroany]{ss31}} % state (after mixcols)
+\SkinnyRoundTK[16]
+              {\Fill[nonzeroany]{ss31}} % state (input)
+              {\Cell{ss00}{\texttt{0}}\Cell{ss01}{\texttt{1}}\Cell{ss02}{\texttt{2}}\Cell{ss03}{\texttt{3}}\Cell{ss10}{\texttt{4}}\Cell{ss11}{\texttt{5}}\Cell{ss12}{\texttt{6}}\Cell{ss13}{\texttt{7}}} % tk[1]
+              {} % tk[2]
+              {} % tk[3]
+              {\Fill[nonzerofixed]{ss31}} % state (after subcells)
+              {\Fill[nonzerofixed]{ss31}} % state (after addtweakey)
+              {\Fill[nonzerofixed]{ss30}} % state (after shiftrows)
+
+\SkinnyRoundTK[17]
+              {\TFill{ss00}\BFill{ss30}} % state (input)
+              {\TFill{ss00}\Cell{ss00}{\texttt{9}}\Cell{ss01}{\texttt{f}}\Cell{ss02}{\texttt{8}}\Cell{ss03}{\texttt{d}}\Cell{ss10}{\texttt{a}}\Cell{ss11}{\texttt{e}}\Cell{ss12}{\texttt{c}}\Cell{ss13}{\texttt{b}}} % tk[1]
+              {} % tk[2]
+              {} % tk[3]
+              {\TFill{ss00}\BFill{ss30}} % state (after subcells)
+              {\TFill{ss00}\BFill{ss30}} % state (after addtweakey)
+              {\TFill{ss00}\BFill{ss33}} % state (after shiftrows)
+
+\SkinnyNewLine[18]{\TFill{ss10}\BFill{ss03}\BFill{ss33}} % state (after mixcols)
+\SkinnyRoundTK[18]
+              {\TFill{ss10}\BFill{ss03}\BFill{ss33}} % state (input)
+              {\TFill{ss10}\BFill{ss03}\Cell{ss00}{\texttt{1}}\Cell{ss01}{\texttt{7}}\Cell{ss02}{\texttt{0}}\Cell{ss03}{\texttt{5}}\Cell{ss10}{\texttt{2}}\Cell{ss11}{\texttt{6}}\Cell{ss12}{\texttt{4}}\Cell{ss13}{\texttt{3}}} % tk[1]
+              {} % tk[2]
+              {} % tk[3]
+              {\TFill{ss10}\BFill{ss03}\BFill{ss33}} % state (after subcells)
+              {\TFill{ss10}\BFill{ss03}\BFill{ss33}} % state (after addtweakey)
+              {\TFill{ss11}\BFill{ss03}\BFill{ss32}} % state (after shiftrows)
+
+\SkinnyFin[19]{\TFill{ss11}\TFill{ss21}\TFill{ss31}\BFill{ss02}\BFill{ss13}\BFill{ss32}} % state (after mixcols)
+
+\SkinnyRoundTK[19]
+              {\TFill{ss11}\TFill{ss21}\TFill{ss31}\BFill{ss02}\BFill{ss13}\BFill{ss32}} % state (input)
+              {\TFill{ss11}\BFill{ss02}\BFill{ss13}\Cell{ss00}{\texttt{f}}\Cell{ss01}{\texttt{b}}\Cell{ss02}{\texttt{9}}\Cell{ss03}{\texttt{e}}\Cell{ss10}{\texttt{8}}\Cell{ss11}{\texttt{c}}\Cell{ss12}{\texttt{a}}\Cell{ss13}{\texttt{d}}} % tk[1]
+              {} % tk[2]
+              {} % tk[3]
+              {\TFill{ss11}\TFill{ss21}\TFill{ss31}\BFill{ss02}\BFill{ss13}\BFill{ss32}} % state (after subcells)
+              {\TFill{ss11}\TFill{ss21}\TFill{ss31}\BFill{ss02}\BFill{ss13}\BFill{ss32}} % state (after addtweakey)
+              {\TFill{ss12}\TFill{ss23}\TFill{ss30}\BFill{ss02}\BFill{ss10}\BFill{ss31}} % state (after shiftrows)
+
+\SkinnyNewLine[20]{\TFill{ss00}\TFill{ss12}\TFill{ss13}\TFill{ss22}\TFill{ss30}\TFill{ss32}\TFill{ss33}\BFill{ss01}\BFill{ss10}\BFill{ss12}\BFill{ss20}\BFill{ss30}\BFill{ss31}} % state (after mixcols)
+\SkinnyRoundTK[20]
+              {\TFill{ss00}\TFill{ss12}\TFill{ss13}\TFill{ss22}\TFill{ss30}\TFill{ss32}\TFill{ss33}\BFill{ss01}\BFill{ss10}\BFill{ss12}\BFill{ss20}\BFill{ss30}\BFill{ss31}} % state (input)
+              {\TFill{ss00}\TFill{ss12}\TFill{ss13}\BFill{ss01}\BFill{ss10}\BFill{ss12}\Cell{ss00}{\texttt{7}}\Cell{ss01}{\texttt{3}}\Cell{ss02}{\texttt{1}}\Cell{ss03}{\texttt{6}}\Cell{ss10}{\texttt{0}}\Cell{ss11}{\texttt{4}}\Cell{ss12}{\texttt{2}}\Cell{ss13}{\texttt{5}}} % tk[1]
+              {} % tk[2]
+              {} % tk[3]
+              {\TFill{ss00}\TFill{ss12}\TFill{ss13}\TFill{ss22}\TFill{ss30}\TFill{ss32}\TFill{ss33}\BFill{ss01}\BFill{ss10}\BFill{ss12}\BFill{ss20}\BFill{ss30}\BFill{ss31}} % state (after subcells)
+              {\TFill{ss00}\TFill{ss12}\TFill{ss13}\TFill{ss22}\TFill{ss30}\TFill{ss32}\TFill{ss33}\BFill{ss01}\BFill{ss10}\BFill{ss12}\BFill{ss20}\BFill{ss30}\BFill{ss31}} % state (after addtweakey)
+              {\TFill{ss00}\TFill{ss13}\TFill{ss10}\TFill{ss20}\TFill{ss33}\TFill{ss31}\TFill{ss32}\BFill{ss01}\BFill{ss11}\BFill{ss13}\BFill{ss22}\BFill{ss33}\BFill{ss30}} % state (after shiftrows)
+
+\SkinnyFin[21]{\TFill{ss01}\TFill{ss02}\TFill{ss03}\TFill{ss10}\TFill{ss13}\TFill{ss20}\TFill{ss23}\TFill{ss30}\TFill{ss31}\TFill{ss32}\TFill{ss33}\BFill{ss00}\BFill{ss03}\BFill{ss11}\BFill{ss12}\BFill{ss13}\BFill{ss21}\BFill{ss23}\BFill{ss30}\BFill{ss31}\BFill{ss32}\BFill{ss33}} % state (after mixcols)
+
+\SkinnyRoundTK[21]
+              {\TFill{ss01}\TFill{ss02}\TFill{ss03}\TFill{ss10}\TFill{ss13}\TFill{ss20}\TFill{ss23}\TFill{ss30}\TFill{ss31}\TFill{ss32}\TFill{ss33}\BFill{ss00}\BFill{ss03}\BFill{ss11}\BFill{ss12}\BFill{ss13}\BFill{ss21}\BFill{ss23}\BFill{ss30}\BFill{ss31}\BFill{ss32}\BFill{ss33}} % state (input)
+              {\TFill{ss01}\TFill{ss02}\TFill{ss03}\TFill{ss10}\TFill{ss13}\BFill{ss00}\BFill{ss03}\BFill{ss11}\Fill[lazy, opacity=0.70]{ss11}\BFill{ss12}\BFill{ss13}\Cell{ss00}{\texttt{b}}\Cell{ss01}{\texttt{d}}\Cell{ss02}{\texttt{f}}\Cell{ss03}{\texttt{c}}\Cell{ss10}{\texttt{9}}\Cell{ss11}{\texttt{a}}\Cell{ss12}{\texttt{8}}\Cell{ss13}{\texttt{e}}} % tk[1]
+              {} % tk[2]
+              {} % tk[3]
+              {\TFill{ss01}\TFill{ss02}\TFill{ss03}\TFill{ss10}\TFill{ss13}\TFill{ss20}\TFill{ss23}\TFill{ss30}\TFill{ss31}\TFill{ss32}\TFill{ss33}\BFill{ss00}\BFill{ss03}\BFill{ss11}\BFill{ss12}\BFill{ss13}\BFill{ss21}\BFill{ss23}\BFill{ss30}\BFill{ss31}\BFill{ss32}\BFill{ss33}} % state (after subcells)
+              {\TFill{ss01}\TFill{ss02}\TFill{ss03}\TFill{ss10}\TFill{ss13}\TFill{ss20}\TFill{ss23}\TFill{ss30}\TFill{ss31}\TFill{ss32}\TFill{ss33}\BFill{ss00}\BFill{ss03}\BFill{ss11}\BFill{ss12}\BFill{ss13}\BFill{ss21}\BFill{ss23}\BFill{ss30}\BFill{ss31}\BFill{ss32}\BFill{ss33}} % state (after addtweakey)
+              {\TFill{ss01}\TFill{ss02}\TFill{ss03}\TFill{ss11}\TFill{ss10}\TFill{ss22}\TFill{ss21}\TFill{ss33}\TFill{ss30}\TFill{ss31}\TFill{ss32}\BFill{ss00}\BFill{ss03}\BFill{ss12}\BFill{ss13}\BFill{ss10}\BFill{ss23}\BFill{ss21}\BFill{ss33}\BFill{ss30}\BFill{ss31}\BFill{ss32}} % state (after shiftrows)
+
+\SkinnyNewLine[22]{\TFill{ss00}\TFill{ss01}\TFill{ss02}\TFill{ss03}\TFill{ss10}\TFill{ss11}\TFill{ss12}\TFill{ss13}\TFill{ss20}\TFill{ss21}\TFill{ss30}\TFill{ss31}\TFill{ss32}\TFill{ss33}\BFill{ss00}\BFill{ss01}\BFill{ss02}\BFill{ss03}\BFill{ss10}\BFill{ss11}\BFill{ss12}\BFill{ss13}\BFill{ss20}\BFill{ss22}\BFill{ss23}\BFill{ss30}\BFill{ss31}\BFill{ss32}\BFill{ss33}} % state (after mixcols)
+\SkinnyRoundTK[22]
+              {\TFill{ss00}\TFill{ss01}\TFill{ss02}\TFill{ss03}\TFill{ss10}\TFill{ss11}\TFill{ss12}\TFill{ss13}\TFill{ss20}\TFill{ss21}\TFill{ss30}\TFill{ss31}\TFill{ss32}\TFill{ss33}\BFill{ss00}\BFill{ss01}\BFill{ss02}\BFill{ss03}\BFill{ss10}\BFill{ss11}\BFill{ss12}\BFill{ss13}\BFill{ss20}\BFill{ss22}\BFill{ss23}\BFill{ss30}\BFill{ss31}\BFill{ss32}\BFill{ss33}} % state (input)
+              {\TFill{ss00}\TFill{ss01}\TFill{ss02}\TFill{ss03}\TFill{ss10}\TFill{ss11}\TFill{ss12}\TFill{ss13}\BFill{ss00}\BFill{ss01}\BFill{ss02}\BFill{ss03}\BFill{ss10}\BFill{ss11}\BFill{ss12}\BFill{ss13}\Cell{ss00}{\texttt{3}}\Cell{ss01}{\texttt{5}}\Cell{ss02}{\texttt{7}}\Cell{ss03}{\texttt{4}}\Cell{ss10}{\texttt{1}}\Cell{ss11}{\texttt{2}}\Cell{ss12}{\texttt{0}}\Cell{ss13}{\texttt{6}}} % tk[1]
+              {} % tk[2]
+              {} % tk[3]
+              {\TFill{ss00}\TFill{ss01}\TFill{ss02}\TFill{ss03}\TFill{ss10}\TFill{ss11}\TFill{ss12}\TFill{ss13}\TFill{ss20}\TFill{ss21}\TFill{ss30}\TFill{ss31}\TFill{ss32}\TFill{ss33}\BFill{ss00}\BFill{ss01}\BFill{ss02}\BFill{ss03}\BFill{ss10}\BFill{ss11}\BFill{ss12}\BFill{ss13}\BFill{ss20}\BFill{ss22}\BFill{ss23}\BFill{ss30}\BFill{ss31}\BFill{ss32}\BFill{ss33}} % state (after subcells)
+              {\TFill{ss00}\TFill{ss01}\TFill{ss02}\TFill{ss03}\TFill{ss10}\TFill{ss11}\TFill{ss12}\TFill{ss13}\TFill{ss20}\TFill{ss21}\TFill{ss30}\TFill{ss31}\TFill{ss32}\TFill{ss33}\BFill{ss00}\BFill{ss01}\BFill{ss02}\BFill{ss03}\BFill{ss10}\BFill{ss11}\BFill{ss12}\BFill{ss13}\BFill{ss20}\BFill{ss22}\BFill{ss23}\BFill{ss30}\BFill{ss31}\BFill{ss32}\BFill{ss33}} % state (after addtweakey)
+              {\TFill{ss00}\TFill{ss01}\TFill{ss02}\TFill{ss03}\TFill{ss11}\TFill{ss12}\TFill{ss13}\TFill{ss10}\TFill{ss22}\TFill{ss23}\TFill{ss33}\TFill{ss30}\TFill{ss31}\TFill{ss32}\BFill{ss00}\BFill{ss01}\BFill{ss02}\BFill{ss03}\BFill{ss11}\BFill{ss12}\BFill{ss13}\BFill{ss10}\BFill{ss22}\BFill{ss20}\BFill{ss21}\BFill{ss33}\BFill{ss30}\BFill{ss31}\BFill{ss32}} % state (after shiftrows)
+
+\SkinnyFin[23]{\TFill{ss00}\TFill{ss01}\TFill{ss02}\TFill{ss03}\TFill{ss10}\TFill{ss11}\TFill{ss12}\TFill{ss13}\TFill{ss20}\TFill{ss21}\TFill{ss22}\TFill{ss23}\TFill{ss30}\TFill{ss31}\TFill{ss32}\TFill{ss33}\BFill{ss00}\BFill{ss01}\BFill{ss02}\BFill{ss03}\BFill{ss10}\BFill{ss11}\BFill{ss12}\BFill{ss13}\BFill{ss20}\BFill{ss21}\BFill{ss22}\BFill{ss23}\BFill{ss30}\BFill{ss31}\BFill{ss32}\BFill{ss33}} % state (after mixcols)
+
+\SkinnyRoundTK[23]
+              {\TFill{ss00}\TFill{ss01}\TFill{ss02}\TFill{ss03}\TFill{ss10}\TFill{ss11}\TFill{ss12}\TFill{ss13}\TFill{ss20}\TFill{ss21}\TFill{ss22}\TFill{ss23}\TFill{ss30}\TFill{ss31}\TFill{ss32}\TFill{ss33}\BFill{ss00}\BFill{ss01}\BFill{ss02}\BFill{ss03}\BFill{ss10}\BFill{ss11}\BFill{ss12}\BFill{ss13}\BFill{ss20}\BFill{ss21}\BFill{ss22}\BFill{ss23}\BFill{ss30}\BFill{ss31}\BFill{ss32}\BFill{ss33}} % state (input)
+              {\TFill{ss00}\TFill{ss01}\TFill{ss02}\TFill{ss03}\Fill[lazy, opacity=0.70]{ss03}\TFill{ss10}\TFill{ss11}\TFill{ss12}\TFill{ss13}\BFill{ss00}\BFill{ss01}\BFill{ss02}\BFill{ss03}\Fill[lazy, opacity=0.70]{ss03}\BFill{ss10}\BFill{ss11}\BFill{ss12}\BFill{ss13}\Cell{ss00}{\texttt{d}}\Cell{ss01}{\texttt{e}}\Cell{ss02}{\texttt{b}}\Cell{ss03}{\texttt{a}}\Cell{ss10}{\texttt{f}}\Cell{ss11}{\texttt{8}}\Cell{ss12}{\texttt{9}}\Cell{ss13}{\texttt{c}}} % tk[1]
+              {} % tk[2]
+              {} % tk[3]
+              {\TFill{ss00}\TFill{ss01}\TFill{ss02}\TFill{ss03}\TFill{ss10}\TFill{ss11}\TFill{ss12}\TFill{ss13}\TFill{ss20}\TFill{ss21}\TFill{ss22}\TFill{ss23}\TFill{ss30}\TFill{ss31}\TFill{ss32}\TFill{ss33}\BFill{ss00}\BFill{ss01}\BFill{ss02}\BFill{ss03}\BFill{ss10}\BFill{ss11}\BFill{ss12}\BFill{ss13}\BFill{ss20}\BFill{ss21}\BFill{ss22}\BFill{ss23}\BFill{ss30}\BFill{ss31}\BFill{ss32}\BFill{ss33}} % state (after subcells)
+              {\TFill{ss00}\TFill{ss01}\TFill{ss02}\TFill{ss03}\TFill{ss10}\TFill{ss11}\TFill{ss12}\TFill{ss13}\TFill{ss20}\TFill{ss21}\TFill{ss22}\TFill{ss23}\TFill{ss30}\TFill{ss31}\TFill{ss32}\TFill{ss33}\BFill{ss00}\BFill{ss01}\BFill{ss02}\BFill{ss03}\BFill{ss10}\BFill{ss11}\BFill{ss12}\BFill{ss13}\BFill{ss20}\BFill{ss21}\BFill{ss22}\BFill{ss23}\BFill{ss30}\BFill{ss31}\BFill{ss32}\BFill{ss33}} % state (after addtweakey)
+              {\TFill{ss00}\TFill{ss01}\TFill{ss02}\TFill{ss03}\TFill{ss11}\TFill{ss12}\TFill{ss13}\TFill{ss10}\TFill{ss22}\TFill{ss23}\TFill{ss20}\TFill{ss21}\TFill{ss33}\TFill{ss30}\TFill{ss31}\TFill{ss32}\BFill{ss00}\BFill{ss01}\BFill{ss02}\BFill{ss03}\BFill{ss11}\BFill{ss12}\BFill{ss13}\BFill{ss10}\BFill{ss22}\BFill{ss23}\BFill{ss20}\BFill{ss21}\BFill{ss33}\BFill{ss30}\BFill{ss31}\BFill{ss32}} % state (after shiftrows)
+
+\SkinnyNewLine[24]{\TFill{ss00}\TFill{ss01}\TFill{ss02}\TFill{ss03}\TFill{ss10}\TFill{ss11}\TFill{ss12}\TFill{ss13}\TFill{ss20}\TFill{ss21}\TFill{ss22}\TFill{ss23}\TFill{ss30}\TFill{ss31}\TFill{ss32}\TFill{ss33}\BFill{ss00}\BFill{ss01}\BFill{ss02}\BFill{ss03}\BFill{ss10}\BFill{ss11}\BFill{ss12}\BFill{ss13}\BFill{ss20}\BFill{ss21}\BFill{ss22}\BFill{ss23}\BFill{ss30}\BFill{ss31}\BFill{ss32}\BFill{ss33}} % state (after mixcols)
+\SkinnyRoundTK[24]
+              {\TFill{ss00}\TFill{ss01}\TFill{ss02}\TFill{ss03}\TFill{ss10}\TFill{ss11}\TFill{ss12}\TFill{ss13}\TFill{ss20}\TFill{ss21}\TFill{ss22}\TFill{ss23}\TFill{ss30}\TFill{ss31}\TFill{ss32}\TFill{ss33}\BFill{ss00}\BFill{ss01}\BFill{ss02}\BFill{ss03}\BFill{ss10}\BFill{ss11}\BFill{ss12}\BFill{ss13}\BFill{ss20}\BFill{ss21}\BFill{ss22}\BFill{ss23}\BFill{ss30}\BFill{ss31}\BFill{ss32}\BFill{ss33}} % state (input)
+              {\TFill{ss00}\TFill{ss01}\TFill{ss02}\TFill{ss03}\TFill{ss10}\TFill{ss11}\TFill{ss12}\TFill{ss13}\BFill{ss00}\BFill{ss01}\BFill{ss02}\BFill{ss03}\BFill{ss10}\BFill{ss11}\BFill{ss12}\BFill{ss13}\Cell{ss00}{\texttt{5}}\Cell{ss01}{\texttt{6}}\Cell{ss02}{\texttt{3}}\Cell{ss03}{\texttt{2}}\Cell{ss10}{\texttt{7}}\Cell{ss11}{\texttt{0}}\Cell{ss12}{\texttt{1}}\Cell{ss13}{\texttt{4}}} % tk[1]
+              {} % tk[2]
+              {} % tk[3]
+              {\TFill{ss00}\TFill{ss01}\TFill{ss02}\TFill{ss03}\TFill{ss10}\TFill{ss11}\TFill{ss12}\TFill{ss13}\TFill{ss20}\TFill{ss21}\TFill{ss22}\TFill{ss23}\TFill{ss30}\TFill{ss31}\TFill{ss32}\TFill{ss33}\BFill{ss00}\BFill{ss01}\BFill{ss02}\BFill{ss03}\BFill{ss10}\BFill{ss11}\BFill{ss12}\BFill{ss13}\BFill{ss20}\BFill{ss21}\BFill{ss22}\BFill{ss23}\BFill{ss30}\BFill{ss31}\BFill{ss32}\BFill{ss33}} % state (after subcells)
+              {\TFill{ss00}\TFill{ss01}\TFill{ss02}\TFill{ss03}\TFill{ss10}\TFill{ss11}\TFill{ss12}\TFill{ss13}\TFill{ss20}\TFill{ss21}\TFill{ss22}\TFill{ss23}\TFill{ss30}\TFill{ss31}\TFill{ss32}\TFill{ss33}\BFill{ss00}\BFill{ss01}\BFill{ss02}\BFill{ss03}\BFill{ss10}\BFill{ss11}\BFill{ss12}\BFill{ss13}\BFill{ss20}\BFill{ss21}\BFill{ss22}\BFill{ss23}\BFill{ss30}\BFill{ss31}\BFill{ss32}\BFill{ss33}} % state (after addtweakey)
+              {\TFill{ss00}\TFill{ss01}\TFill{ss02}\TFill{ss03}\TFill{ss11}\TFill{ss12}\TFill{ss13}\TFill{ss10}\TFill{ss22}\TFill{ss23}\TFill{ss20}\TFill{ss21}\TFill{ss33}\TFill{ss30}\TFill{ss31}\TFill{ss32}\BFill{ss00}\BFill{ss01}\BFill{ss02}\BFill{ss03}\BFill{ss11}\BFill{ss12}\BFill{ss13}\BFill{ss10}\BFill{ss22}\BFill{ss23}\BFill{ss20}\BFill{ss21}\BFill{ss33}\BFill{ss30}\BFill{ss31}\BFill{ss32}} % state (after shiftrows)
+
+\SkinnyFin[25]{\TFill{ss00}\TFill{ss01}\TFill{ss02}\TFill{ss03}\TFill{ss10}\TFill{ss11}\TFill{ss12}\TFill{ss13}\TFill{ss20}\TFill{ss21}\TFill{ss22}\TFill{ss23}\TFill{ss30}\TFill{ss31}\TFill{ss32}\TFill{ss33}\BFill{ss00}\BFill{ss01}\BFill{ss02}\BFill{ss03}\BFill{ss10}\BFill{ss11}\BFill{ss12}\BFill{ss13}\BFill{ss20}\BFill{ss21}\BFill{ss22}\BFill{ss23}\BFill{ss30}\BFill{ss31}\BFill{ss32}\BFill{ss33}} % state (after mixcols)
+
+\SkinnyRoundTK[25]
+              {\TFill{ss00}\TFill{ss01}\TFill{ss02}\TFill{ss03}\TFill{ss10}\TFill{ss11}\TFill{ss12}\TFill{ss13}\TFill{ss20}\TFill{ss21}\TFill{ss22}\TFill{ss23}\TFill{ss30}\TFill{ss31}\TFill{ss32}\TFill{ss33}\BFill{ss00}\BFill{ss01}\BFill{ss02}\BFill{ss03}\BFill{ss10}\BFill{ss11}\BFill{ss12}\BFill{ss13}\BFill{ss20}\BFill{ss21}\BFill{ss22}\BFill{ss23}\BFill{ss30}\BFill{ss31}\BFill{ss32}\BFill{ss33}} % state (input)
+              {\TFill{ss00}\TFill{ss01}\TFill{ss02}\TFill{ss03}\TFill{ss10}\TFill{ss11}\TFill{ss12}\TFill{ss13}\Fill[lazy, opacity=0.70]{ss13}\BFill{ss00}\BFill{ss01}\BFill{ss02}\BFill{ss03}\BFill{ss10}\BFill{ss11}\BFill{ss12}\BFill{ss13}\Fill[lazy, opacity=0.70]{ss13}\Cell{ss00}{\texttt{e}}\Cell{ss01}{\texttt{c}}\Cell{ss02}{\texttt{d}}\Cell{ss03}{\texttt{8}}\Cell{ss10}{\texttt{b}}\Cell{ss11}{\texttt{9}}\Cell{ss12}{\texttt{f}}\Cell{ss13}{\texttt{a}}} % tk[1]
+              {} % tk[2]
+              {} % tk[3]
+              {\TFill{ss00}\TFill{ss01}\TFill{ss02}\TFill{ss03}\TFill{ss10}\TFill{ss11}\TFill{ss12}\TFill{ss13}\TFill{ss20}\TFill{ss21}\TFill{ss22}\TFill{ss23}\TFill{ss30}\TFill{ss31}\TFill{ss32}\TFill{ss33}\BFill{ss00}\BFill{ss01}\BFill{ss02}\BFill{ss03}\BFill{ss10}\BFill{ss11}\BFill{ss12}\BFill{ss13}\BFill{ss20}\BFill{ss21}\BFill{ss22}\BFill{ss23}\BFill{ss30}\BFill{ss31}\BFill{ss32}\BFill{ss33}} % state (after subcells)
+              {\TFill{ss00}\TFill{ss01}\TFill{ss02}\TFill{ss03}\TFill{ss10}\TFill{ss11}\TFill{ss12}\TFill{ss13}\TFill{ss20}\TFill{ss21}\TFill{ss22}\TFill{ss23}\TFill{ss30}\TFill{ss31}\TFill{ss32}\TFill{ss33}\BFill{ss00}\BFill{ss01}\BFill{ss02}\BFill{ss03}\BFill{ss10}\BFill{ss11}\BFill{ss12}\BFill{ss13}\BFill{ss20}\BFill{ss21}\BFill{ss22}\BFill{ss23}\BFill{ss30}\BFill{ss31}\BFill{ss32}\BFill{ss33}} % state (after addtweakey)
+              {\TFill{ss00}\TFill{ss01}\TFill{ss02}\TFill{ss03}\TFill{ss11}\TFill{ss12}\TFill{ss13}\TFill{ss10}\TFill{ss22}\TFill{ss23}\TFill{ss20}\TFill{ss21}\TFill{ss33}\TFill{ss30}\TFill{ss31}\TFill{ss32}\BFill{ss00}\BFill{ss01}\BFill{ss02}\BFill{ss03}\BFill{ss11}\BFill{ss12}\BFill{ss13}\BFill{ss10}\BFill{ss22}\BFill{ss23}\BFill{ss20}\BFill{ss21}\BFill{ss33}\BFill{ss30}\BFill{ss31}\BFill{ss32}} % state (after shiftrows)
+
+\SkinnyFin[26]{\TFill{ss00}\TFill{ss01}\TFill{ss02}\TFill{ss03}\TFill{ss10}\TFill{ss11}\TFill{ss12}\TFill{ss13}\TFill{ss20}\TFill{ss21}\TFill{ss22}\TFill{ss23}\TFill{ss30}\TFill{ss31}\TFill{ss32}\TFill{ss33}\BFill{ss00}\BFill{ss01}\BFill{ss02}\BFill{ss03}\BFill{ss10}\BFill{ss11}\BFill{ss12}\BFill{ss13}\BFill{ss20}\BFill{ss21}\BFill{ss22}\BFill{ss23}\BFill{ss30}\BFill{ss31}\BFill{ss32}\BFill{ss33}} % state (after mixcols)
+
+\end{tikzpicture}
+%\caption{ZC/Integral attack on 26 rounds of \SKINNY[$n$-$3n$]. Twakeys cells that are active at most 3 times: TK[10] . \#Involved key cells (maximum): 40}
+%\end{figure}
+\end{document}

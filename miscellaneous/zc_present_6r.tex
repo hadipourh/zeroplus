@@ -1,0 +1,266 @@
+\documentclass[varwidth=12cm]{standalone}
+\usepackage{amsmath,amssymb}
+\usepackage{subcaption}
+\usepackage{tikz}
+\usepackage{comment}
+\usepackage{tugcolors}
+\usetikzlibrary{positioning,cipher, calc}
+
+% Define your custom colors
+\colorlet{zero}{white}
+\colorlet{one}{tugred}
+\colorlet{upperunknown}{tugblue}
+\colorlet{lowerunknown}{tuggreen!70!green}
+
+\newif\ifshowhelpers\showhelpersfalse % set \showhelperstrue to display indexing helper labels
+\ifshowhelpers
+\usepackage[final]{microtype}
+\microtypesetup{letterspace=-80}
+\fi
+
+\newcommand{\activeInputUpper}[2]{
+\draw[->, #2, very thick] (i0-#1) -- (i0-#1|-S1-0.north);
+}
+
+\newcommand{\activeLinearUpper}[3]{
+% #1 = round, #2 = bit position at sboxout
+\pgfmathsetmacro{\newPos}{int(mod(\nbits/4*#2,\lastBit)+div(#2,\lastBit)*\lastBit)}
+\draw[#3,->, double distance=.5pt, fill=none] ($(i0-#2|-S#1-0.south) + (0, -0.25em)$) -- +(0,-.5em) -- (i#1-\newPos) -- (xor#1-\newPos.south);
+\pgfmathsetmacro{\actSbx}{int(div(#2,4))}
+\activeSboxUpper{#1}{\actSbx}{#3}
+}
+
+\newcommand{\activeSboxUpper}[3]{
+% #1 = round, #2 = sbox position
+\node[box, minimum size=0.5cm, fill=#3] (S#1-#2) at (#2*3em+1.1em,7em-#1*9em) {\color{white}$\mathcal{S}$};
+}
+
+\newcommand{\activeInputLower}[2]{
+\draw[->, #2, thick, double distance=.5pt, fill=none] (i0-#1|-S1-0.north) -- (i0-#1);
+}
+
+\newcommand{\activeLinearLower}[3]{
+% #1 = round, #2 = bit position at sboxout
+\pgfmathsetmacro{\newPos}{int(mod(\nbits/4*#2,\lastBit)+div(#2,\lastBit)*\lastBit)}
+\draw[#3,->, thick] (xor#1-\newPos.north) -- (i#1-\newPos) -- ($(i0-#2|-S#1-0.south) + (0,-.5em)$) -- ($(S#1-0-|i0-#2) + (0,-1em)$);
+\pgfmathsetmacro{\actSbx}{int(div(#2,4))}
+\activeSboxLower{#1}{\actSbx}{#3}
+}
+
+\newcommand{\activeSboxLower}[3]{
+% #1 = round, #2 = sbox position
+\node[box, thick, draw=#3, double distance=.2pt, fill=none] (S#1-#2) at (#2*3em+1.1em,7em-#1*9em) {$\mathcal{S}$};
+}
+
+
+\begin{document}
+%\begin{figure}
+\centering
+\begin{tikzpicture}[scale=.625,                              % adapt size
+                    box/.append style={minimum size=.625cm}, % adapt size
+                    activebit/.style={tug, thin, double distance=.5pt},
+                    rounded corners, >=latex]
+\pgfmathsetmacro{\nrounds}{6} % set nr rounds
+\pgfmathsetmacro{\nbits}{64}  % set bitsize of state
+\pgfmathsetmacro{\lastBit}{int(\nbits-1)}
+\pgfmathsetmacro{\secondlastBit}{int(\nbits-2)}
+\pgfmathsetmacro{\lastSbox}{int(\nbits/4-1)}
+\foreach \r in {0,...,\nrounds} {
+\foreach \z in {0,...,\lastBit} {
+    \node[xor, scale=0.6] (xor\r-\z) at (\z*0.75em,-\r*9em) {};
+    \coordinate[above = 0.5em of xor\r-\z] (i\r-\z) ;
+}
+\node[left = 0em of xor\r-0] (K\r) {};
+}
+\foreach \z in {0,...,\lastBit} {
+\draw[->] (i0-\z) -- (xor0-\z);
+\ifshowhelpers
+    \pgfmathsetmacro{\idxraise}{2-4*mod(\z,2)} % indexing helper
+    \draw (i0-\z) node[above=\idxraise pt,gray] {\tiny\ttfamily\lsstyle \z}; % indexing helper
+\fi
+}
+\foreach \r [evaluate=\r as \rr using {int(\r-1)}] in {1,...,\nrounds} {
+\foreach \z in {0,...,\lastSbox} {
+    \node[box] (S\r-\z) at (\z*3em+1.1em,7em-\r*9em) {$\mathcal{S}$};
+}
+\foreach \z [evaluate=\z as \zz using {int(mod(\nbits/4*\z,\lastBit))}] in {0,...,\secondlastBit} {
+    \draw[->] (xor\rr-\z|-S\r-0.south) -- +(0,-.5em) -- (i\r-\zz) -- (xor\r-\zz);
+    \draw     (xor\rr-\z) -- (xor\rr-\z|-S\r-0.north);
+}
+\draw[->] (xor\rr-\lastBit|-S\r-0.south) -- +(0,-.5em) -- (i\r-\lastBit) -- (xor\r-\lastBit);
+\draw     (xor\rr-\lastBit) -- (xor\rr-\lastBit|-S\r-0.north);
+}
+
+\activeInputUpper{63}{one}
+\activeLinearUpper{1}{60}{upperunknown}
+\activeLinearUpper{1}{61}{one}
+\activeLinearUpper{1}{62}{upperunknown}
+\activeLinearUpper{1}{63}{one}
+\activeLinearUpper{2}{12}{upperunknown}
+\activeLinearUpper{2}{13}{upperunknown}
+\activeLinearUpper{2}{14}{upperunknown}
+\activeLinearUpper{2}{15}{upperunknown}
+\activeLinearUpper{2}{28}{upperunknown}
+\activeLinearUpper{2}{29}{one}
+\activeLinearUpper{2}{30}{upperunknown}
+\activeLinearUpper{2}{31}{one}
+\activeLinearUpper{2}{44}{upperunknown}
+\activeLinearUpper{2}{45}{upperunknown}
+\activeLinearUpper{2}{46}{upperunknown}
+\activeLinearUpper{2}{47}{upperunknown}
+\activeLinearUpper{2}{60}{upperunknown}
+\activeLinearUpper{2}{61}{one}
+\activeLinearUpper{2}{62}{upperunknown}
+\activeLinearUpper{2}{63}{one}
+\activeLinearUpper{3}{0}{upperunknown}
+\activeLinearUpper{3}{1}{upperunknown}
+\activeLinearUpper{3}{2}{upperunknown}
+\activeLinearUpper{3}{3}{upperunknown}
+\activeLinearUpper{3}{4}{upperunknown}
+\activeLinearUpper{3}{5}{upperunknown}
+\activeLinearUpper{3}{6}{upperunknown}
+\activeLinearUpper{3}{7}{upperunknown}
+\activeLinearUpper{3}{8}{upperunknown}
+\activeLinearUpper{3}{9}{upperunknown}
+\activeLinearUpper{3}{10}{upperunknown}
+\activeLinearUpper{3}{11}{upperunknown}
+\activeLinearUpper{3}{12}{upperunknown}
+\activeLinearUpper{3}{13}{upperunknown}
+\activeLinearUpper{3}{14}{upperunknown}
+\activeLinearUpper{3}{15}{upperunknown}
+\activeLinearUpper{3}{16}{upperunknown}
+\activeLinearUpper{3}{17}{upperunknown}
+\activeLinearUpper{3}{18}{upperunknown}
+\activeLinearUpper{3}{19}{upperunknown}
+\activeLinearUpper{3}{20}{upperunknown}
+\activeLinearUpper{3}{21}{one}
+\activeLinearUpper{3}{22}{upperunknown}
+\activeLinearUpper{3}{23}{one}
+\activeLinearUpper{3}{24}{upperunknown}
+\activeLinearUpper{3}{25}{upperunknown}
+\activeLinearUpper{3}{26}{upperunknown}
+\activeLinearUpper{3}{27}{upperunknown}
+\activeLinearUpper{3}{28}{upperunknown}
+\activeLinearUpper{3}{29}{one}
+\activeLinearUpper{3}{30}{upperunknown}
+\activeLinearUpper{3}{31}{one}
+\activeLinearUpper{3}{32}{upperunknown}
+\activeLinearUpper{3}{33}{upperunknown}
+\activeLinearUpper{3}{34}{upperunknown}
+\activeLinearUpper{3}{35}{upperunknown}
+\activeLinearUpper{3}{36}{upperunknown}
+\activeLinearUpper{3}{37}{upperunknown}
+\activeLinearUpper{3}{38}{upperunknown}
+\activeLinearUpper{3}{39}{upperunknown}
+\activeLinearUpper{3}{40}{upperunknown}
+\activeLinearUpper{3}{41}{upperunknown}
+\activeLinearUpper{3}{42}{upperunknown}
+\activeLinearUpper{3}{43}{upperunknown}
+\activeLinearUpper{3}{44}{upperunknown}
+\activeLinearUpper{3}{45}{upperunknown}
+\activeLinearUpper{3}{46}{upperunknown}
+\activeLinearUpper{3}{47}{upperunknown}
+\activeLinearUpper{3}{48}{upperunknown}
+\activeLinearUpper{3}{49}{upperunknown}
+\activeLinearUpper{3}{50}{upperunknown}
+\activeLinearUpper{3}{51}{upperunknown}
+\activeLinearUpper{3}{52}{upperunknown}
+\activeLinearUpper{3}{53}{one}
+\activeLinearUpper{3}{54}{upperunknown}
+\activeLinearUpper{3}{55}{one}
+\activeLinearUpper{3}{56}{upperunknown}
+\activeLinearUpper{3}{57}{upperunknown}
+\activeLinearUpper{3}{58}{upperunknown}
+\activeLinearUpper{3}{59}{upperunknown}
+\activeLinearUpper{3}{60}{upperunknown}
+\activeLinearUpper{3}{61}{one}
+\activeLinearUpper{3}{62}{upperunknown}
+\activeLinearUpper{3}{63}{one}
+\activeLinearLower{3}{0}{lowerunknown}
+\activeLinearLower{3}{1}{lowerunknown}
+\activeLinearLower{3}{2}{lowerunknown}
+\activeLinearLower{3}{4}{lowerunknown}
+\activeLinearLower{3}{5}{lowerunknown}
+\activeLinearLower{3}{6}{lowerunknown}
+\activeLinearLower{3}{8}{lowerunknown}
+\activeLinearLower{3}{9}{lowerunknown}
+\activeLinearLower{3}{10}{lowerunknown}
+\activeLinearLower{3}{12}{lowerunknown}
+\activeLinearLower{3}{13}{lowerunknown}
+\activeLinearLower{3}{14}{lowerunknown}
+\activeLinearLower{3}{16}{lowerunknown}
+\activeLinearLower{3}{17}{lowerunknown}
+\activeLinearLower{3}{18}{lowerunknown}
+\activeLinearLower{3}{20}{lowerunknown}
+\activeLinearLower{3}{21}{lowerunknown}
+\activeLinearLower{3}{22}{lowerunknown}
+\activeLinearLower{3}{24}{lowerunknown}
+\activeLinearLower{3}{25}{lowerunknown}
+\activeLinearLower{3}{26}{lowerunknown}
+\activeLinearLower{3}{28}{lowerunknown}
+\activeLinearLower{3}{29}{lowerunknown}
+\activeLinearLower{3}{30}{lowerunknown}
+\activeLinearLower{3}{32}{lowerunknown}
+\activeLinearLower{3}{33}{lowerunknown}
+\activeLinearLower{3}{34}{lowerunknown}
+\activeLinearLower{3}{36}{lowerunknown}
+\activeLinearLower{3}{37}{lowerunknown}
+\activeLinearLower{3}{38}{lowerunknown}
+\activeLinearLower{3}{40}{lowerunknown}
+\activeLinearLower{3}{41}{lowerunknown}
+\activeLinearLower{3}{42}{lowerunknown}
+\activeLinearLower{3}{44}{lowerunknown}
+\activeLinearLower{3}{45}{lowerunknown}
+\activeLinearLower{3}{46}{lowerunknown}
+\activeLinearLower{3}{48}{lowerunknown}
+\activeLinearLower{3}{49}{lowerunknown}
+\activeLinearLower{3}{50}{lowerunknown}
+\activeLinearLower{3}{52}{lowerunknown}
+\activeLinearLower{3}{53}{lowerunknown}
+\activeLinearLower{3}{54}{lowerunknown}
+\activeLinearLower{3}{56}{lowerunknown}
+\activeLinearLower{3}{57}{lowerunknown}
+\activeLinearLower{3}{58}{lowerunknown}
+\activeLinearLower{3}{60}{lowerunknown}
+\activeLinearLower{3}{61}{lowerunknown}
+\activeLinearLower{3}{62}{lowerunknown}
+\activeLinearLower{4}{1}{lowerunknown}
+\activeLinearLower{4}{5}{lowerunknown}
+\activeLinearLower{4}{9}{lowerunknown}
+\activeLinearLower{4}{13}{lowerunknown}
+\activeLinearLower{4}{17}{lowerunknown}
+\activeLinearLower{4}{21}{lowerunknown}
+\activeLinearLower{4}{25}{lowerunknown}
+\activeLinearLower{4}{29}{lowerunknown}
+\activeLinearLower{4}{33}{lowerunknown}
+\activeLinearLower{4}{37}{lowerunknown}
+\activeLinearLower{4}{41}{lowerunknown}
+\activeLinearLower{4}{45}{lowerunknown}
+\activeLinearLower{5}{16}{lowerunknown}
+\activeLinearLower{5}{20}{lowerunknown}
+\activeLinearLower{5}{24}{lowerunknown}
+\activeLinearLower{6}{4}{one}
+\activeLinearLower{6}{6}{one}
+\activeLinearLower{6}{7}{one}
+
+
+\begin{comment}
+Attack summary:
+Setting: RD: 6
+################################################################################
+Contradiction locations: [(3, 53), (3, 55), (3, 61), (3, 63)]
+################################################################################
+input: 
+0000000000000000000000000000000000000000000000000000000000000001;
+################################################################################
+output: 
+0100000000000000000000000000000001000000000000000100000000000000;
+################################################################################
+Number of non-fixed input bits: 0
+Number of non-fixed output bits: 0
+Time used to find a distinguisher: 1.52 seconds
+\end{comment}
+\end{tikzpicture}
+%\caption{ZC distinguisher for6rounds of \texttt{PRESENT}.}
+%\end{figure}
+\end{document}

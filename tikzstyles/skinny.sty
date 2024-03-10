@@ -1,0 +1,471 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{skinny}[2022/08/23 Utils for illustrating the SKINNY cipher]
+
+%%% PREREQUISITES %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\RequirePackage{amsmath,amssymb}
+\RequirePackage{tikz}
+\RequirePackage{xspace}
+\usetikzlibrary{calc,cipher}
+\usetikzlibrary{patterns}
+\usepackage{fontawesome}
+
+%%% GENERAL CRYPTO UTILS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\providecommand{\cipher}[1]{\textsf{#1}}
+
+\providecommand{\SC}{\cipher{SC}\xspace}
+\providecommand{\AC}{\cipher{AC}\xspace}
+\providecommand{\ART}{\cipher{ART}\xspace}
+\providecommand{\AK}{\cipher{AK}\xspace}
+\providecommand{\SR}{\cipher{SR}\xspace}
+\providecommand{\MC}{\cipher{MC}\xspace}
+
+\providecommand{\SubCells}{\cipher{SubCells}\xspace}
+\providecommand{\AddConstants}{\cipher{AddConstants}\xspace}
+\providecommand{\AddRoundTweakey}{\cipher{AddRoundTweakey}\xspace}
+\providecommand{\ShiftRows}{\cipher{ShiftRows}\xspace}
+\providecommand{\MixColumns}{\cipher{MixColumns}\xspace}
+
+%%% COLORS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\colorlet{diff}{blue!50}
+\colorlet{free}{green!30}
+\colorlet{oper}{white}
+
+\providecommand{\ActCell}[2]{%
+  \FillCell{#1} % optional parameter for fill options
+  \Cell{#1}{\color{white}#2} % write content
+}
+
+\providecommand{\HighlightTweakey}[1][]{\draw[line width=1.5pt,#1] (0,0) rectangle +(4,-2);}
+
+%%% SKINNY UTILS & OPTIONS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\SKINNY}[1][]{\if\relax\detokenize{#1}\relax\cipher{SKINNY}\else\mbox{\cipher{SKINNY}-#1}\fi\xspace}
+
+\tikzset{
+  state/.style={inner sep=-.5pt},
+  stateopts/.style={scale=.3},
+  fillopts/.style={diff},
+  markopts/.style={marc,ultra thick},
+  cellopts/.style={font=\footnotesize},
+  box/.append style={fill=oper},
+  >=latex
+}
+\newcommand{\stateScale}{.3} % TODO derive!
+
+\newif\ifTKthree\TKthreefalse % true = show 3 subtweakeys
+\newif\ifsubstep\substeptrue % true = show state after each substep (SC, ART, SR, MC); false = only show state after ART and MC
+
+%%% SKINNY ROUND FUNCTIONS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\newcommand{\SkinnyInit}[4]{
+  % parameters = printed labels for states (message, tk1, tk2, tk3)
+  % #1 = MSG = S = L
+  % #2 = TK1 = T = R
+  % #3 = TK2 = U = M
+  % #4 = TK3 = V = N
+  \coordinate (init); % beginning of current line
+  \SkinnyInitCoordinates{#1}{#2}{#3}{#4}
+}
+
+\newcommand{\SkinnyInitCoordinates}[4]{
+  % called by SkinnyInit and SkinnyNewLine to initialize state coordinates based on (init)
+  \draw (init) coordinate (here); % current x-coordinate of state
+  \draw (here)  node (S) {#1}
+       +(0,.6)  coordinate (lbl)
+      ++(0,1)   node (T) {#2};
+  \draw (S.east) coordinate (Shere)
+        (T.east) coordinate (There);
+
+  \ifTKthree
+    \draw (T)
+        ++(0,1) node (U) {#3}
+        ++(0,1) node (V) {#4};
+    \draw (U.east) coordinate (Uhere)
+          (V.east) coordinate (Vhere);
+  \fi
+
+  \draw (here) +(.75,0) coordinate(here);
+  \foreach \r/\offset in {0/.45,1/.15,2/-.15,3/-.45} {
+    \draw (here) + (0,\offset) coordinate (S\r);
+  }
+  \draw (S) +(-.25,-.9) coordinate (Shook); % for \SkinnyNewLine
+}
+
+\newcommand{\SkinnyState}[1]{
+  \draw (Shere.east) coordinate (Sprev);
+  \draw (S-|here) node[state] (Shere) {\State{#1}};
+  \draw[->] (Sprev) -- (Shere.west|-Sprev); }
+
+
+\newcommand{\HalfState}[1]{%
+  \tikz[stateopts]{
+    \foreach \x/\y/\s in {0/0/0, 0/1/1, 0/2/2, 0/3/3,
+                          1/0/4, 1/1/5, 1/2/6, 1/3/7} {
+       %
+      \draw (\y+.5,-\x-.5) coordinate (s\s) coordinate (ss\x\y); % (rowwise indices)
+    }
+    \draw (2,-1) coordinate (label);
+    #1
+    \draw (0,0) rectangle (4,-2);
+    \draw[raster] (0,-1) -- ++(4,0);
+    \foreach \x in {1,2,3} { \draw[raster] (\x,0) -- ++(0,-2); }
+  }%
+}
+
+
+\newcommand{\SkinnyRoundTK}[8][]{
+  % #1 = round number (optional)
+  % #2 = S (state)
+  % #3 = T (tk[1])
+  % #4 = U (tk[2]) (can be empty \ifTKthreefalse)
+  % #5 = V (tk[3]) (can be empty \ifTKthreefalse)
+  % #6 = S after SubCells (can be empty \ifsubstepfalse)
+  % #7 = S after AddRoundTweakey
+  % #8 = S after ShiftRows (can be empty \ifsubstepfalse)
+  %      S after MixColumns is part of the next round or SkinnyFin
+  %
+  % round input:
+  \draw (Shere.east) coordinate (Sprev);
+  \draw (S-|here) node[state] (Shere) {\State{#2}};
+  \draw (Shere|-lbl) node[above,inner sep=1pt] {$X_{#1}$};
+  % SubCells:
+  \draw (Shere.east) coordinate (Sprev);
+  \draw (Shere) ++(1,0) node[box,minimum height=1.2cm,minimum width=.42cm,font=\scriptsize,align=center] (Shere) {\SC\\\AC};
+  \ifsubstep
+    \draw (Sprev) -- (Shere);
+    \draw (here) +(2.0,0) coordinate(here);
+    \SkinnyState{#6}
+    \draw (Shere|-lbl) node[above,inner sep=1pt] {$Y_{#1}$};
+  \else
+    \draw[->] (Sprev) -- (Shere);
+    \draw (here) +(0.5,0) coordinate(here);
+  \fi
+  
+  % AddRoundTweakey:
+  \draw (here.east) ++(1.5,\stateScale) coordinate[xor] (Txor);
+  \draw[->] (Shere.east|-Txor) -- (Txor);
+  \draw (Txor|-lbl) node[above,inner sep=1pt] {$\textit{STK}_{#1}$};
+  \draw (Txor.east) coordinate (Shere);
+  \ifTKthree
+    % TODO replace
+    \foreach \S/\arg in {T/#3,U/#4,V/#5} {
+      \draw (\S here.east) coordinate (\S prev);
+      \draw (\S-|here) node[state] (\S here) {\HalfState{\arg}};
+    }
+    \foreach \S/\xd in {T/-2pt,U/+0pt,V/+2pt} {
+      \draw[->] (\S prev) -- (\S here);
+      \draw (\S-|Txor) +(\xd,0) coordinate[tee] (t\S);
+      \draw[->] (\S here) -- (t\S) coordinate (\S here) -- (t\S|-Txor.north);
+    }
+  \else
+    \draw (There.east) coordinate (Tprev);
+    \draw (Txor.center) ++(0,-\stateScale-\stateScale) node[state] (There) {\HalfState{#3}};
+    \draw[->] (There) -- (Txor);
+  \fi
+  \draw (here) +(3.0,0) coordinate(here);
+  \SkinnyState{#7}
+  \draw (Shere|-lbl) node[above,inner sep=1pt] {$Z_{#1}$};
+
+  % ShiftRows:
+  \draw (Shere.east) coordinate (Sprev);
+  \draw (Shere) ++(1,0) node[box,minimum height=1.2cm,minimum width=.42cm,font=\scriptsize,align=center] (Shere) {\tiny$\vphantom{1}$\\\tiny$\!\ggg\!\!1$\\\tiny$\!\ggg\!\!2$\\\tiny$\!\ggg\!\!3$};
+
+  \ifsubstep
+    \draw (Sprev) -- (Shere);
+    \draw (here) +(2.0,0) coordinate(here);
+    \SkinnyState{#8}
+    \draw (Shere|-lbl) node[above,inner sep=1pt] {$W_{#1}$};
+  \else
+    \draw (here) +(0.7,0) coordinate(here);
+    \foreach \r in {0,...,3} { \draw (S\r-|Sprev.east) -- (S\r-|Shere.west); }
+  \fi
+
+  % MixColumns
+  \draw (S0-|Shere.east)              coordinate               (S0prev)
+        (S1-|Shere.east) -- ++(.15,0) coordinate[xor,scale=.5] (S1prev)
+        (S2-|Shere.east) -- ++(.30,0) coordinate[xor,scale=.5] (S2prev)
+        (S3-|Shere.east) -- ++(.45,0) coordinate[xor,scale=.5] (S3prev);
+  \draw[->] (S2-|S1prev) coordinate[tee,scale=.5] -- (S1prev);
+  \draw[->] (S0-|S2prev) coordinate[tee,scale=.5] -- (S2prev);
+  \draw[->] (S2-|S3prev) coordinate[tee,scale=.5] -- (S3prev);
+  \draw (here) +(1.2,0) coordinate(here);
+  \draw (here) +(.15,0) coordinate(next);
+  \foreach \r/\rn in {0/1,1/2,2/3,3/0} {
+    \draw[->,rounded corners=1pt] (S\r prev) -- (S\r-|here) -- (S\rn-|next) -- ++(.2,0);
+  }
+  \draw (here) +(.95,0) coordinate(here);
+}
+
+
+\newcommand{\SkinnyRoundEK}[8][]{
+  % Skinny round with Equivalent subTweaKey
+  % #1 = round number (optional)
+  % #2 = S (state)
+  % #3 = ETK
+  % #4 = (tk[2]) (ignored! just for compatibility with SkinnyRoundTK)
+  % #5 = (tk[3]) (ignored! just for compatibility with SkinnyRoundTK)
+  % #6 = S after SubCells (can be empty if \substepfalse)
+  % #7 = S after ShiftRows (can be empty if \substepfalse)
+  % #8 = S after MixColumns
+  %      S after AddRoundTweakey is part of the next round or SkinnyFin
+  %
+  % round input:
+  \draw (Shere.east) coordinate (Sprev);
+  \draw (S-|here) node[state] (Shere) {\State{#2}};
+  \draw (Shere|-lbl) node[above,inner sep=1pt] {$X_{#1}$};
+  % SubCells:
+  \draw (Shere.east) coordinate (Sprev);
+  \draw (Shere) ++(1,0) node[box,minimum height=1.2cm,minimum width=.42cm,font=\scriptsize,align=center] (Shere) {\SC\\\AC};
+  \ifsubstep
+    \draw (Sprev) -- (Shere);
+    \draw (here) +(2.0,0) coordinate(here);
+    \SkinnyState{#6}
+    \draw (Shere|-lbl) node[above,inner sep=1pt] {$Y_{#1}$}; %  = Z_{#1}
+  \else
+    \draw[->] (Sprev) -- (Shere);
+    \draw (here) +(0.5,0) coordinate(here);
+  \fi
+
+  % ShiftRows:
+  \draw (Shere.east) coordinate (Sprev);
+  \draw (Shere) ++(1,0) node[box,minimum height=1.2cm,minimum width=.42cm,font=\scriptsize,align=center] (Shere) {\tiny$\vphantom{1}$\\\tiny$\!\ggg\!\!1$\\\tiny$\!\ggg\!\!2$\\\tiny$\!\ggg\!\!3$};
+
+  \ifsubstep
+    \draw (Sprev) -- (Shere);
+    \draw (here) +(2.0,0) coordinate(here);
+    \SkinnyState{#7}
+    \draw (Shere|-lbl) node[above,inner sep=1pt] {$W_{#1}$};
+  \else
+    \draw (here) +(0.7,0) coordinate(here);
+    \foreach \r in {0,...,3} { \draw (S\r-|Sprev.east) -- (S\r-|Shere.west); }
+  \fi
+
+  % MixColumns
+  \draw (S0-|Shere.east)              coordinate               (S0prev)
+        (S1-|Shere.east) -- ++(.15,0) coordinate[xor,scale=.5] (S1prev)
+        (S2-|Shere.east) -- ++(.30,0) coordinate[xor,scale=.5] (S2prev)
+        (S3-|Shere.east) -- ++(.45,0) coordinate[xor,scale=.5] (S3prev);
+  \draw[->] (S2-|S1prev) coordinate[tee,scale=.5] -- (S1prev);
+  \draw[->] (S0-|S2prev) coordinate[tee,scale=.5] -- (S2prev);
+  \draw[->] (S2-|S3prev) coordinate[tee,scale=.5] -- (S3prev);
+  \draw (here) +(1.2,0) coordinate(here);
+  \draw (here) +(.15,0) coordinate(next);
+  \foreach \r/\rn in {0/1,1/2,2/3,3/0} {
+    \draw[->,rounded corners=1pt] (S\r prev) -- (S\r-|here) -- (S\rn-|next) -- ++(.2,0);
+  }
+  \draw (here) +(.95,0) coordinate(here);
+  
+  % AddRoundTweakey:
+  \draw (S-|here) node[state] (Shere) {\State{#8}};
+  \draw (Shere.east) coordinate (Sprev);
+  \draw (Shere|-lbl) node[above,inner sep=1pt] {$W'_{#1}$};
+  \draw (here.east) ++(1.5,1.5*\stateScale) coordinate[xor] (Txor);
+  \draw (Sprev) ++(1.5+\stateScale,0) coordinate (Tfin);
+  \draw[->,rounded corners=1pt] (Sprev) -- +(.5*\stateScale,0) |- (Txor);
+  \draw[->,rounded corners=1pt] (Txor) -- +(2.5*\stateScale,0) |- (Tfin);
+  \draw (Txor|-lbl) node[above,inner sep=1pt] {$\textit{ETK}_{#1}$};
+  \draw (Txor.east) coordinate (Shere);
+  \draw (There.east) coordinate (Tprev);
+  \draw (Txor.center) ++(0,-2.5*\stateScale) node[state] (There) {\State{#3}};
+  \draw (There.north) -- (Txor);
+  \draw (here) +(3.0,0) coordinate(here);
+  % adapt hook depth
+  \draw (S) +(-.25,-1) coordinate (Shook); % for \SkinnyNewLine
+}
+
+
+\newcommand{\SkinnyNewLine}[2][]{
+  % #1 = round number (optional)
+  % #2 = state after mixcols (repeated at beginning of next line)
+  % draw and connect final state 
+  \foreach \S/\arg in {S/#2} {
+    \draw (\S here.east) coordinate (\S prev);
+    \draw (\S-|here) node[state] (\S here) {\State{\arg}};
+  }
+  \draw (Shere|-lbl) node[above,inner sep=1pt] {$X_{#1}$};
+  \ifTKthree
+    \foreach \S in {T,U,V} {
+      \draw[->] (\S here) -- (\S-|here) node[right] {$\cdots$};
+    }
+  \else
+    % TODO draw tk schedule somewhere else
+    %\draw[->] (There) -- (T-|here) node[right] {$\cdots$};
+  \fi
+
+  \ifTKthree
+    \draw (init) +(0,-6.5) coordinate (init);
+  \else
+    \draw (init) +(0,-2.0) coordinate (init);
+  \fi
+  \draw (Shere.east) coordinate (Send);
+  \draw (Shook) coordinate (Thook);
+  \SkinnyInitCoordinates{}{}{$\;\cdots$}{$\;\cdots$}
+  \draw[->,rounded corners=2pt] (Send) -- +(.25,0) |- (Thook) |- (init) -- +(.15,0);
+}
+
+\newcommand{\SkinnyFin}[2][]{
+  % #1 = round number (optional)
+  % #2 = final state
+  \foreach \S/\arg in {S/#2} {
+    \draw (\S here.east) coordinate (\S prev);
+    \draw (\S-|here) node[state] (\S here) {\State{\arg}};
+    %\draw[->] (\S prev) -- (\S here);
+  }
+  \draw (Shere|-lbl) node[above,inner sep=1pt] {$X_{#1}$};
+
+  \ifTKthree
+    \foreach \S in {T,U,V} {
+      \draw[->] (\S here) -- (\S-|here);
+    }
+  \else
+    %\draw[->] (There) -- (T-|here);
+  \fi
+}
+
+
+%%% SKINNYee round function %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\SkinnyeeRoundT}[8][]{
+  % same as SkinnyRoundTK, but displays "ST" (subtweak only) instead of "STK"
+  % #1 = round number (optional)
+  % #2 = S (state)
+  % #3 = T (t[1])
+  % #4 = empty
+  % #5 = empty
+  % #6 = S after SubCells (can be empty \ifsubstepfalse)
+  % #7 = S after AddRoundTweakey
+  % #8 = S after ShiftRows (can be empty \ifsubstepfalse)
+  %      S after MixColumns is part of the next round or SkinnyFin
+  %
+  % round input:
+  \draw (Shere.east) coordinate (Sprev);
+  \draw (S-|here) node[state] (Shere) {\State{#2}};
+  \draw (Shere|-lbl) node[above,inner sep=1pt] {$X_{#1}$};
+  % SubCells:
+  \draw (Shere.east) coordinate (Sprev);
+  \draw (Shere) ++(1,0) node[box,minimum height=1.2cm,minimum width=.42cm,font=\scriptsize,align=center] (Shere) {\SC\\\AC};
+  \ifsubstep
+    \draw (Sprev) -- (Shere);
+    \draw (here) +(2.0,0) coordinate(here);
+    \SkinnyState{#6}
+    \draw (Shere|-lbl) node[above,inner sep=1pt] {$Y_{#1}$};
+  \else
+    \draw[->] (Sprev) -- (Shere);
+    \draw (here) +(0.5,0) coordinate(here);
+  \fi
+  
+  % AddRoundTweakey:
+  \draw (here.east) ++(1.5,\stateScale) coordinate[xor] (Txor);
+  \draw[->] (Shere.east|-Txor) -- (Txor);
+  \draw (Txor|-lbl) node[above,inner sep=1pt] {$\textit{ST}_{#1}$};
+  \draw (Txor.east) coordinate (Shere);
+  \draw (There.east) coordinate (Tprev);
+  \draw (Txor.center) ++(0,-\stateScale-\stateScale) node[state] (There) {\HalfState{#3}};
+  \draw[->] (There) -- (Txor);
+  \draw (here) +(3.0,0) coordinate(here);
+  \SkinnyState{#7}
+  \draw (Shere|-lbl) node[above,inner sep=1pt] {$Z_{#1}$};
+
+  % ShiftRows:
+  \draw (Shere.east) coordinate (Sprev);
+  \draw (Shere) ++(1,0) node[box,minimum height=1.2cm,minimum width=.42cm,font=\scriptsize,align=center] (Shere) {\tiny$\vphantom{1}$\\\tiny$\!\ggg\!\!1$\\\tiny$\!\ggg\!\!2$\\\tiny$\!\ggg\!\!3$};
+
+  \ifsubstep
+    \draw (Sprev) -- (Shere);
+    \draw (here) +(2.0,0) coordinate(here);
+    \SkinnyState{#8}
+    \draw (Shere|-lbl) node[above,inner sep=1pt] {$W_{#1}$};
+  \else
+    \draw (here) +(0.7,0) coordinate(here);
+    \foreach \r in {0,...,3} { \draw (S\r-|Sprev.east) -- (S\r-|Shere.west); }
+  \fi
+
+  % MixColumns
+  \draw (S0-|Shere.east)              coordinate               (S0prev)
+        (S1-|Shere.east) -- ++(.15,0) coordinate[xor,scale=.5] (S1prev)
+        (S2-|Shere.east) -- ++(.30,0) coordinate[xor,scale=.5] (S2prev)
+        (S3-|Shere.east) -- ++(.45,0) coordinate[xor,scale=.5] (S3prev);
+  \draw[->] (S2-|S1prev) coordinate[tee,scale=.5] -- (S1prev);
+  \draw[->] (S0-|S2prev) coordinate[tee,scale=.5] -- (S2prev);
+  \draw[->] (S2-|S3prev) coordinate[tee,scale=.5] -- (S3prev);
+  \draw (here) +(1.2,0) coordinate(here);
+  \draw (here) +(.15,0) coordinate(next);
+  \foreach \r/\rn in {0/1,1/2,2/3,3/0} {
+    \draw[->,rounded corners=1pt] (S\r prev) -- (S\r-|here) -- (S\rn-|next) -- ++(.2,0);
+  }
+  \draw (here) +(.95,0) coordinate(here);
+}
+
+\newcommand{\SkinnyeeRoundTK}[8][]{
+  % similar to SkinnyeeRoundT, but shows tweak and key
+  % #1 = round number (optional)
+  % #2 = S (state)
+  % #3 = T|K
+  % #4 = empty
+  % #5 = empty
+  % #6 = S after SubCells
+  % #7 = S after AddRoundTweakey
+  % #8 = S after ShiftRows
+  %      S after MixColumns is part of the next round or SkinnyFin
+  %
+  % round input:
+  \draw (Shere.east) coordinate (Sprev);
+  \draw (S-|here) node[state] (Shere) {\State{#2}};
+  \draw (Shere|-lbl) node[above,inner sep=1pt] {$X_{#1}$};
+  % SubCells:
+  \draw (Shere.east) coordinate (Sprev);
+  \draw (Shere) ++(1,0) node[box,minimum height=1.2cm,minimum width=.42cm,font=\scriptsize,align=center] (Shere) {\SC\\\AC};
+
+  \draw (Sprev) -- (Shere);
+  \draw (here) +(2.0,0) coordinate(here);
+  \SkinnyState{#6}
+  \draw (Shere|-lbl) node[above,inner sep=1pt] {$Y_{#1}$}; %  = Z_{#1}
+
+  % AddRoundTweakey:
+  \draw (Shere.east) coordinate (Sprev);
+  %\draw (Shere|-lbl) node[above,inner sep=1pt] {$W'_{#1}$};
+  \draw (here.east) ++(1.5,1.5*\stateScale) coordinate[xor] (Txor);
+  \draw (Sprev) ++(1.5+\stateScale,0) coordinate (Tfin);
+  \draw[->,rounded corners=1pt] (Sprev) -- +(.5*\stateScale,0) |- (Txor);
+  \draw[->,rounded corners=1pt] (Txor) -- +(2.5*\stateScale,0) |- (Tfin);
+  \draw (Txor|-lbl) node[above,inner sep=1pt] {$\textit{ST}_{#1} \Vert K_{#1\%4}$};
+  \draw (Txor.east) coordinate (Shere);
+  \draw (There.east) coordinate (Tprev);
+  \draw (Txor.center) ++(0,-2.5*\stateScale) node[state] (There) {\State{#3 \draw[thick] (0,-2) -- +(4,0);}};
+  \draw (There.north) -- (Txor);
+  \draw (here) +(3.0,0) coordinate(here);
+
+  % ShiftRows:
+  \draw (S-|here) node[state] (Shere) {\State{#7}};
+  \draw (Shere.east) coordinate (Sprev);
+  \draw (Shere|-lbl) node[above,inner sep=1pt] {$Z_{#1}$};
+  \draw (Shere) ++(1,0) node[box,minimum height=1.2cm,minimum width=.42cm,font=\scriptsize,align=center] (Shere) {\tiny$\vphantom{1}$\\\tiny$\!\ggg\!\!1$\\\tiny$\!\ggg\!\!2$\\\tiny$\!\ggg\!\!3$};
+
+  \ifsubstep
+    \draw (Sprev) -- (Shere);
+    \draw (here) +(2.0,0) coordinate(here);
+    \SkinnyState{#8}
+    \draw (Shere|-lbl) node[above,inner sep=1pt] {$W_{#1}$};
+  \else
+    \draw (here) +(0.7,0) coordinate(here);
+    \foreach \r in {0,...,3} { \draw (S\r-|Sprev.east) -- (S\r-|Shere.west); }
+  \fi
+
+  % MixColumns
+  \draw (S0-|Shere.east)              coordinate               (S0prev)
+        (S1-|Shere.east) -- ++(.15,0) coordinate[xor,scale=.5] (S1prev)
+        (S2-|Shere.east) -- ++(.30,0) coordinate[xor,scale=.5] (S2prev)
+        (S3-|Shere.east) -- ++(.45,0) coordinate[xor,scale=.5] (S3prev);
+  \draw[->] (S2-|S1prev) coordinate[tee,scale=.5] -- (S1prev);
+  \draw[->] (S0-|S2prev) coordinate[tee,scale=.5] -- (S2prev);
+  \draw[->] (S2-|S3prev) coordinate[tee,scale=.5] -- (S3prev);
+  \draw (here) +(1.2,0) coordinate(here);
+  \draw (here) +(.15,0) coordinate(next);
+  \foreach \r/\rn in {0/1,1/2,2/3,3/0} {
+    \draw[->,rounded corners=1pt] (S\r prev) -- (S\r-|here) -- (S\rn-|next) -- ++(.2,0);
+  }
+  \draw (here) +(.95,0) coordinate(here);
+  
+  % adapt hook depth
+  \draw (S) +(-.25,-1) coordinate (Shook); % for \SkinnyNewLine
+}
+
+\endinput

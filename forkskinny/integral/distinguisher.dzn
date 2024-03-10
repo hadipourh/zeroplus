@@ -1,0 +1,5 @@
+NPT = 3;
+RD = 17;
+Ri = 15;
+R0 = 27;
+skip_first_sbox_layer = false;

@@ -1,0 +1,88 @@
+\documentclass[multi=page, varwidth=50cm]{standalone}
+\usepackage{skinnyzero}
+\usepackage{tabularx}
+\usepackage{booktabs}
+
+\definecolor{c0}{hsb}{0.0,0.75,0.5}
+\definecolor{c1}{hsb}{0.0,0.5,0.5}
+\definecolor{c2}{hsb}{0.0,0.25,0.5}
+\definecolor{c3}{hsb}{0.5,0.75,0.5}
+\definecolor{c4}{hsb}{0.5,0.5,0.5}
+\definecolor{c5}{hsb}{0.5,0.25,0.5}
+\definecolor{c6}{hsb}{1.0,0.75,0.5}
+\definecolor{c7}{hsb}{1.0,0.4999999999999999,0.5}
+\colorlet{key}{tuggreen}
+\begin{document}
+        
+\begin{page}
+\begin{tikzpicture}[baseline=0pt]
+  \SkinnyInit{}{}{}{}
+
+  \SkinnyRoundTK[13] % round number should be 0-indexed
+                {\Fill{ss00}\Cell{ss00}{\ttfamily 7}} % state (input)
+                {\Fill[key]{ss00}\Cell{ss00}{\ttfamily a}}{}{} % tk[1,2,3]
+                {\Fill{ss00}\Cell{ss00}{\ttfamily 7}} % state (after subcells)
+                {\Fill{ss00}\Cell{ss00}{\ttfamily 7}} % state (after addtweakey)
+                {\Fill{ss00}\Cell{ss00}{\ttfamily 7}} % state (after shiftrows)
+
+  \SkinnyNewLine[14]
+                {\Fill{ss10}\Cell{ss10}{\ttfamily 7}} % state (after mixcolumns)
+
+  \SkinnyRoundTK[14] % round number should be 0-indexed
+                {\Fill{ss10}\Cell{ss10}{\ttfamily 7}} % state (input)
+                {\Fill[key]{ss10}\Cell{ss10}{\ttfamily 6}}{}{} % tk[1,2,3]
+                {\Fill{ss10}\Cell{ss10}{\ttfamily 7}} % state (after subcells)
+                {\Fill{ss10}\Cell{ss10}{\ttfamily 7}} % state (after addtweakey)
+                {\Fill{ss11}\Cell{ss11}{\ttfamily 7}} % state (after shiftrows)
+
+  \SkinnyNewLine[15]
+                {\Fill{ss11}\Fill{ss21}\Fill{ss31}\Cell{ss11}{\ttfamily 5}\Cell{ss21}{\ttfamily 6}\Cell{ss31}{\ttfamily 7}} % state (after mixcolumns)
+
+  \SkinnyRoundTK[15] % round number should be 0-indexed
+                {\Fill{ss11}\Fill{ss21}\Fill{ss31}\Cell{ss11}{\ttfamily 5}\Cell{ss21}{\ttfamily 6}\Cell{ss31}{\ttfamily 7}} % state (input)
+                {\Fill[key]{ss11}\Cell{ss11}{\ttfamily d}}{}{} % tk[1,2,3]
+                {\Fill{ss11}\Fill{ss21}\Fill{ss31}\Cell{ss11}{\ttfamily 5}\Cell{ss21}{\ttfamily 6}\Cell{ss31}{\ttfamily 7}} % state (after subcells)
+                {\Fill{ss11}\Fill{ss21}\Fill{ss31}\Cell{ss11}{\ttfamily 5}\Cell{ss21}{\ttfamily 6}\Cell{ss31}{\ttfamily 7}} % state (after addtweakey)
+                {\Fill{ss12}\Fill{ss23}\Fill{ss30}\Cell{ss12}{\ttfamily 5}\Cell{ss23}{\ttfamily 6}\Cell{ss30}{\ttfamily 7}} % state (after shiftrows)
+
+  \SkinnyNewLine[16]
+                {\Fill{ss33}\Fill{ss32}\Fill{ss30}\Fill{ss22}\Fill{ss12}\Fill{ss13}\Fill{ss00}\Cell{ss33}{\ttfamily 0}\Cell{ss32}{\ttfamily 1}\Cell{ss30}{\ttfamily 3}\Cell{ss22}{\ttfamily 4}\Cell{ss12}{\ttfamily 5}\Cell{ss13}{\ttfamily 6}\Cell{ss00}{\ttfamily 7}} % state (after mixcolumns)
+
+  \SkinnyRoundTK[16] % round number should be 0-indexed
+                {\Fill{ss33}\Fill{ss32}\Fill{ss30}\Fill{ss22}\Fill{ss12}\Fill{ss13}\Fill{ss00}\Cell{ss33}{\ttfamily 0}\Cell{ss32}{\ttfamily 1}\Cell{ss30}{\ttfamily 3}\Cell{ss22}{\ttfamily 4}\Cell{ss12}{\ttfamily 5}\Cell{ss13}{\ttfamily 6}\Cell{ss00}{\ttfamily 7}} % state (input)
+                {\Fill[key]{ss12}\Fill[key]{ss13}\Fill[key]{ss00}\Cell{ss12}{\ttfamily 6}\Cell{ss13}{\ttfamily 7}\Cell{ss00}{\ttfamily 0}}{}{} % tk[1,2,3]
+                {\Fill{ss33}\Fill{ss32}\Fill{ss30}\Fill{ss22}\Fill{ss12}\Fill{ss13}\Fill{ss00}\Cell{ss33}{\ttfamily 0}\Cell{ss32}{\ttfamily 1}\Cell{ss30}{\ttfamily 3}\Cell{ss22}{\ttfamily 4}\Cell{ss12}{\ttfamily 5}\Cell{ss13}{\ttfamily 6}\Cell{ss00}{\ttfamily 7}} % state (after subcells)
+                {\Fill{ss33}\Fill{ss32}\Fill{ss12}\Fill{ss30}\Fill{ss22}\Fill{ss13}\Fill{ss00}\Cell{ss33}{\ttfamily 0}\Cell{ss32}{\ttfamily 1}\Cell{ss12}{\ttfamily 2}\Cell{ss30}{\ttfamily 3}\Cell{ss22}{\ttfamily 4}\Cell{ss13}{\ttfamily 4}\Cell{ss00}{\ttfamily 4}} % state (after addtweakey)
+                {\Fill{ss32}\Fill{ss31}\Fill{ss13}\Fill{ss33}\Fill{ss20}\Fill{ss10}\Fill{ss00}\Cell{ss32}{\ttfamily 0}\Cell{ss31}{\ttfamily 1}\Cell{ss13}{\ttfamily 2}\Cell{ss33}{\ttfamily 3}\Cell{ss20}{\ttfamily 4}\Cell{ss10}{\ttfamily 4}\Cell{ss00}{\ttfamily 4}} % state (after shiftrows)
+
+  \SkinnyNewLine[17]
+                {\Fill{ss20}\Fill{ss32}\Fill{ss33}\Fill{ss23}\Fill{ss30}\Fill{ss31}\Fill{ss02}\Fill{ss01}\Fill{ss13}\Fill{ss03}\Fill{ss10}\Cell{ss20}{\ttfamily 0}\Cell{ss32}{\ttfamily 0}\Cell{ss33}{\ttfamily 0}\Cell{ss23}{\ttfamily 0}\Cell{ss30}{\ttfamily 0}\Cell{ss31}{\ttfamily 0}\Cell{ss02}{\ttfamily 0}\Cell{ss01}{\ttfamily 1}\Cell{ss13}{\ttfamily 2}\Cell{ss03}{\ttfamily 3}\Cell{ss10}{\ttfamily 4}} % state (after mixcolumns)
+
+  \SkinnyRoundTK[17] % round number should be 0-indexed
+                {\Fill{ss20}\Fill{ss32}\Fill{ss33}\Fill{ss23}\Fill{ss30}\Fill{ss31}\Fill{ss02}\Fill{ss01}\Fill{ss13}\Fill{ss03}\Fill{ss10}\Cell{ss20}{\ttfamily 0}\Cell{ss32}{\ttfamily 0}\Cell{ss33}{\ttfamily 0}\Cell{ss23}{\ttfamily 0}\Cell{ss30}{\ttfamily 0}\Cell{ss31}{\ttfamily 0}\Cell{ss02}{\ttfamily 0}\Cell{ss01}{\ttfamily 1}\Cell{ss13}{\ttfamily 2}\Cell{ss03}{\ttfamily 3}\Cell{ss10}{\ttfamily 4}} % state (input)
+                {\Fill{ss02}\Fill[key]{ss01}\Fill[key]{ss13}\Fill[key]{ss03}\Fill[key]{ss10}\Cell{ss02}{\ttfamily 8}\Cell{ss01}{\ttfamily f}\Cell{ss13}{\ttfamily b}\Cell{ss03}{\ttfamily d}\Cell{ss10}{\ttfamily a}}{}{} % tk[1,2,3]
+                {\Fill{ss20}\Fill{ss32}\Fill{ss33}\Fill{ss23}\Fill{ss30}\Fill{ss31}\Fill{ss02}\Fill{ss01}\Fill{ss13}\Fill{ss03}\Fill{ss10}\Cell{ss20}{\ttfamily 0}\Cell{ss32}{\ttfamily 0}\Cell{ss33}{\ttfamily 0}\Cell{ss23}{\ttfamily 0}\Cell{ss30}{\ttfamily 0}\Cell{ss31}{\ttfamily 0}\Cell{ss02}{\ttfamily 0}\Cell{ss01}{\ttfamily 1}\Cell{ss13}{\ttfamily 2}\Cell{ss03}{\ttfamily 3}\Cell{ss10}{\ttfamily 4}} % state (after subcells)
+                {\Fill{ss20}\Fill{ss30}\Fill{ss03}\Fill{ss31}\Fill{ss13}\Fill{ss10}\Fill{ss01}\Fill{ss32}\Fill{ss02}\Fill{ss33}\Fill{ss23}\Cell{ss20}{\ttfamily 0}\Cell{ss30}{\ttfamily 0}\Cell{ss03}{\ttfamily 0}\Cell{ss31}{\ttfamily 0}\Cell{ss13}{\ttfamily 0}\Cell{ss10}{\ttfamily 0}\Cell{ss01}{\ttfamily 0}\Cell{ss32}{\ttfamily 0}\Cell{ss02}{\ttfamily 0}\Cell{ss33}{\ttfamily 0}\Cell{ss23}{\ttfamily 0}} % state (after addtweakey)
+                {\Fill{ss33}\Fill{ss21}\Fill{ss11}\Fill{ss01}\Fill{ss31}\Fill{ss02}\Fill{ss30}\Fill{ss10}\Fill{ss03}\Fill{ss32}\Fill{ss22}\Cell{ss33}{\ttfamily 0}\Cell{ss21}{\ttfamily 0}\Cell{ss11}{\ttfamily 0}\Cell{ss01}{\ttfamily 0}\Cell{ss31}{\ttfamily 0}\Cell{ss02}{\ttfamily 0}\Cell{ss30}{\ttfamily 0}\Cell{ss10}{\ttfamily 0}\Cell{ss03}{\ttfamily 0}\Cell{ss32}{\ttfamily 0}\Cell{ss22}{\ttfamily 0}} % state (after shiftrows)
+
+  \SkinnyFin[18]
+                {\Fill{ss00}\Fill{ss03}\Fill{ss10}\Fill{ss21}\Fill{ss31}\Fill{ss33}\Fill{ss11}\Fill{ss20}\Fill{ss01}\Fill{ss02}\Fill{ss12}\Fill{ss30}\Fill{ss13}\Fill{ss32}\Cell{ss00}{\ttfamily 0}\Cell{ss03}{\ttfamily 0}\Cell{ss10}{\ttfamily 0}\Cell{ss21}{\ttfamily 0}\Cell{ss31}{\ttfamily 0}\Cell{ss33}{\ttfamily 0}\Cell{ss11}{\ttfamily 0}\Cell{ss20}{\ttfamily 0}\Cell{ss01}{\ttfamily 0}\Cell{ss02}{\ttfamily 0}\Cell{ss12}{\ttfamily 0}\Cell{ss30}{\ttfamily 0}\Cell{ss13}{\ttfamily 0}\Cell{ss32}{\ttfamily 0}}
+\end{tikzpicture}
+\begin{tabularx}{21cm}[t]{@{}clc@{${}\times{}$}c@{${}={}$}cc@{${}\cdot{}$}cX@{}}
+  \toprule
+Step & Guessed & Keys & Data & Memo & Time & Unit & Stored Texts \\ \midrule
+  0 & -- & $2^{0}$ & $2^{40}$ & $2^{40}$ & $2^{40}$ & $2^{-5.2}$ & $\textit{Z}_{17}[1, 3, 4, 7]$; $\textit{X}_{17}[8, 11, 12, 13, 15]$; $\textit{X}_{16}[15]$ \\
+  1 & $\textit{STK}_{17}[1]$ & $2^{4}$ & $2^{36}$ & $2^{40}$ & $2^{44}$ & $2^{-7.2}$ & $\textit{Z}_{17}[3, 4, 7]$; $\textit{X}_{17}[8, 11, 12, 15]$; $\textit{X}_{16}[14, 15]$ \\
+  2 & $\textit{STK}_{17}[7]$ & $2^{8}$ & $2^{32}$ & $2^{40}$ & $2^{44}$ & $2^{-8.2}$ & $\textit{Z}_{17}[3, 4]$; $\textit{X}_{17}[8, 12, 15]$; $\textit{Z}_{16}[6]$; $\textit{X}_{16}[14, 15]$ \\
+  3 & $\textit{STK}_{17}[3]$ & $2^{12}$ & $2^{28}$ & $2^{40}$ & $2^{44}$ & $2^{-7.2}$ & $\textit{Z}_{17}[4]$; $\textit{X}_{17}[8, 12]$; $\textit{Z}_{16}[6]$; $\textit{X}_{16}[12, 14, 15]$ \\
+  4 & $\textit{STK}_{17}[4]$ & $2^{16}$ & $2^{28}$ & $2^{44}$ & $2^{44}$ & $2^{-7.2}$ & $\textit{Z}_{16}[0, 6, 7]$; $\textit{X}_{16}[10, 12, 14, 15]$ \\
+  5 & $\textit{STK}_{16}[6]$ & $2^{20}$ & $2^{20}$ & $2^{40}$ & $2^{48}$ & $2^{-7.2}$ & $\textit{Z}_{16}[0, 7]$; $\textit{X}_{16}[12, 15]$; $\textit{X}_{15}[5]$ \\
+  6 & $\textit{STK}_{16}[7]$ & $2^{24}$ & $2^{16}$ & $2^{40}$ & $2^{44}$ & $2^{-7.2}$ & $\textit{Z}_{16}[0]$; $\textit{X}_{16}[12]$; $\textit{X}_{15}[5, 9]$ \\
+  7 & $\textit{STK}_{16}[0]$ & $2^{28}$ & $2^{4}$ & $2^{32}$ & $2^{44}$ & $2^{-6.2}$ & $\textit{X}_{13}[0]$ \\
+  $\Sigma$ & \multicolumn{3}{c}{} & $2^{44}$ & $2^{41.32}$ &  \\
+  \bottomrule
+\end{tabularx}
+\end{page}
+
+        \end{document}
+        

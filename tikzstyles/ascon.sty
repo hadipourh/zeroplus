@@ -1,0 +1,101 @@
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%% Ascon TikZ Macros  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%   Utilities for drawing ascon state                                          %
+%   Version: 2023-07-23                                                        %
+%   Author:                                                     %
+%   \usetikzlibrary{ascon}                                                     %
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% ascon.sty
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{ascon}
+
+\RequirePackage{tikz}
+\RequirePackage{tugcolors}
+\usetikzlibrary{positioning}
+
+% Define the size of each small square
+\newcommand{\squareSize}{1cm}
+
+% Define your custom colors
+\colorlet{zero}{white}
+\colorlet{one}{tugred}
+\colorlet{upperunknown}{tugblue}
+\colorlet{lowerunknown}{tuggreen!70!green}
+
+
+% Define the matrix as a TikZ node with anchors
+\tikzset{
+  matrix node/.style={
+    draw,
+    inner sep=0pt, % Set inner sep to zero to remove padding
+    outer sep=0pt,
+    alias=A,
+    execute at begin node={\begin{tikzpicture}},
+    execute at end node={\end{tikzpicture}}
+  }
+}
+
+% Macros to fill the upper and lower triangles of a cell
+\renewcommand{\TFill}[3][]{\fill[#1] (\squareSize*#3,-\squareSize*#2-\squareSize) -- (\squareSize*#3,-\squareSize*#2) -- (\squareSize*#3+\squareSize,-\squareSize*#2) -- cycle;}
+\renewcommand{\BFill}[3][]{\fill[#1]  (\squareSize*#3,-\squareSize*#2-\squareSize) -- (\squareSize*#3+\squareSize,-\squareSize*#2) -- (\squareSize*#3+\squareSize,-\squareSize*#2-\squareSize) --cycle;}
+\renewcommand{\FillCell}[3]{\fill[#1] (\squareSize*#3,-\squareSize*#2) rectangle ++(\squareSize,-\squareSize);}
+
+% Macro to draw a single square cell
+\newcommand{\drawCell}[2]{%
+  \pgfmathtruncatemacro{\row}{#1}
+  \pgfmathtruncatemacro{\col}{#2}
+  \draw[] (\col*\squareSize,-\row*\squareSize) rectangle ++(\squareSize,-\squareSize);
+}
+
+% Macro to draw a single array
+\newcommand{\drawArray}[1]{%
+  \foreach \i in {0,...,4} {
+    \foreach \j in {0,...,63} {
+      \drawCell{\i}{\j}
+    }
+  }
+  \foreach \fillcmd in {#1} {
+    \fillcmd
+  }
+}
+
+\endinput
+
+
+% % Usage Example
+
+% - Open a .tex file, e.g., main.tex
+% - Add the following lines to the preamble:
+
+% % main.tex
+% \documentclass[tikz]{standalone}
+% \usepackage{ascon}
+
+% \begin{document}
+% \begin{tikzpicture}
+
+%   % Draw the first matrix at (0,0)
+%   \node[matrix node] at (0,0) (matrix1) {
+%     \drawArray{
+%       \TFill[blue]{0}{1},
+%       \BFill[green]{1}{1},
+%       \FillCell{red}{2}{2}
+%     }
+%   };
+
+%   % Draw the second matrix at (6,0)
+%   \node[matrix node, below=5cm of matrix1.center] (matrix2) {
+%     \drawArray{
+%       \TFill[orange]{1}{2},
+%       \BFill[purple]{2}{1},
+%       \TFill[orange]{0}{0}
+%     }
+%   };
+
+%   % Draw an arrow connecting the matrices
+%   \draw[-latex, line width=1.5pt, ultra thick] (matrix1.south) --node[right]{\huge$S$} (matrix2.north);
+
+% \end{tikzpicture}
+% \end{document}
+

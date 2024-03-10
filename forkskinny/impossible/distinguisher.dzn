@@ -1,0 +1,6 @@
+RD = 21;
+NPT = 3;
+Ri = 6;
+R0 = 27;
+skip_first_sbox_layer = true;
+is_related_tweakey = true;

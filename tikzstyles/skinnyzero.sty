@@ -1,0 +1,138 @@
+\NeedsTeXFormat{LaTeX2e}
+\ProvidesPackage{skinnyzero}[2022/10/04 Utils for illustrating the SKINNY cipher in the Zero paper]
+
+\RequirePackage{skinny}
+%\RequirePackage{fontawesome} % for \faBolt - replace by some other contradiction symbol if this causes problems
+\RequirePackage{tugcolors}
+\usetikzlibrary{patterns}
+
+\tikzset{raster/.style={color=gray,very thin}}
+
+\providecommand{\legendwrap}[1]{\tikz[stateopts,baseline=(base)]{#1 \draw[raster] (-.5,.5) rectangle (.5,-.5) ++(0,.20) coordinate (base);}}
+
+\providecommand{\TFill}[2][tugviolet]{\fill[#1] (#2) ++(-.5,.5) -- +(0,-1) -- +(1,0) -- cycle;}
+\providecommand{\BFill}[2][tuggreen!70!green]{\fill[#1] (#2) ++(.5,-.5) -- +(0,1) -- +(-1,0) -- cycle;}
+
+\TKthreefalse % true: show 3 tweakey states / false: show 1 tweakey state
+\substeptrue  % true: show state after each substep / false: show only 2 state per round
+
+\colorlet{nonzerofixed}{tugyellow}
+\colorlet{nonzeroany}{tugred}
+\colorlet{unknown}{tugblue}
+\colorlet{active}{cyan}
+\colorlet{lazy}{gray}
+\colorlet{filter}{yellow!80!red}
+\colorlet{fastfilter}{tugred}
+\colorlet{marcn}{tugred}
+\colorlet{marcf}{tugred}
+\colorlet{upperactive}{tugred}
+\colorlet{loweractive}{tugblue}
+\colorlet{zero}{white}
+\colorlet{one}{tugred}
+\colorlet{upperunknown}{tugblue}
+\colorlet{lowerunknown}{tuggreen!70!green}
+
+\colorlet{key}{tug}    % guessed keys
+\colorlet{cond}{head}  % conditions / determination flow
+\colorlet{oper}{white} % operations (SC, etc)
+
+\providecommand{\PattCell}[2][black]{\draw[pattern color=#1,pattern=north east lines] (#2) ++(-.5,.5) rectangle +(1,-1);}
+\providecommand{\MarkCell}[2][marc]{\fill[#1] (#2) ++(-.5,.5) -- +(0,-.3) -- +(.7,-1) -- +(1,-1) -- +(1,-.7) -- +(.3,0) -- cycle;}
+\providecommand{\MarkCellN}[2][marcn]{\fill[#1] (#2) ++(-.5,.5) -- +(0,-.3) -- +(.7,-1) -- +(1,-1) -- +(1,-.7) -- +(.3,0) -- cycle;}
+\providecommand{\MarkCellF}[2][marcf]{\fill[transform canvas={rotate around={90:(#2)}},#1] (#2) ++(-.5,.5) -- +(0,-.3) -- +(.7,-1) -- +(1,-1) -- +(1,-.7) -- +(.3,0) -- cycle;}
+\providecommand{\FrameCell}[2][fillopts]{\draw[ultra thick, rounded corners=2pt][#1] (#2) ++(-.5,.5) rectangle +(1,-1);}
+
+\newcommand{\SkinnyMismatchAligned}[2][]{
+  % #1 = round number (optional)
+  % #2 = final state
+  \draw (Shere.east) coordinate (Sprev);
+  \draw (S-|here) node[state] (Shere) {\State{#2}};
+  \draw (Shere|-lbl) node[above,inner sep=1pt] {$X_{#1}$};
+  \draw (Shere.south) node[below,inner sep=1pt] {\faBolt};
+
+  \draw (init) +(0,-2.0) coordinate (init);
+  \draw (Shere) coordinate (oldShere);
+  \SkinnyInitCoordinates{}{}{}{}
+  \draw (oldShere|-init) coordinate (here);
+}
+
+\newcommand{\SkinnyMismatchNewLine}[2][]{
+  % #1 = round number (optional)
+  % #2 = state after mixcols (repeated at beginning of next line)
+  % draw and connect final state 
+  \draw (Shere.east) coordinate (Sprev);
+  \draw (S-|here) node[state] (Shere) {\State{#2}};
+  \draw (Shere|-lbl) node[above,inner sep=1pt] {$X_{#1}$};
+  \draw (init) +(0,-2.0) coordinate (init);
+  \draw (Shere.east) coordinate (Send);
+  \draw (Shook) coordinate (Thook);
+  \SkinnyInitCoordinates{}{}{}{}
+  \draw[->,rounded corners=2pt,dashed] (Send) -- +(.25,0) |- (Thook) |- (init) -- +(.15,0);
+  \path (Send) -- node[yshift=4pt,fill=white,inner sep=1pt] {\faBolt} (init);
+}
+
+\newcommand{\CraftMismatchNewLine}[2][]{
+  % #1 = round number (optional)
+  % #2 = state after mixcols (repeated at beginning of next line)
+  % draw and connect final state 
+  \CraftStateNolink[$X_{#1}$]{#2}
+
+  \draw (init) +(0,-2.0) coordinate (init);
+  \draw (Shere.east) coordinate (Send);
+  \draw (Shook) coordinate (Thook);
+  \CraftInitCoordinates{}{}
+  \draw[->,rounded corners=2pt,dashed] (Send) -- +(.25,0) |- (Thook) |- (init) -- +(.15,0);
+  \path (Send) -- node[yshift=4pt,fill=white,inner sep=1pt] {\faBolt} (init);
+}
+
+\newcommand{\ZeroLegend}[1]{ \draw (init) +(0,-2.0+0.5) node[above right] {#1}; }
+\newcommand{\ZL}[2]{ \tikz[stateopts,baseline=(bot)]{#1 \draw (-.5,-.5) coordinate (bot) rectangle (.5,.5);} #2\quad }
+\newcommand{\ZLfill}[2]{ \ZL{\FillCell[#1]{0,0}}{#2} }
+
+\newcommand{\ZeroIDDistinguisherLegend}{
+  \ZeroLegend{\ZLfill{nonzerofixed}{fixed}
+              \ZLfill{nonzeroany}{nonzero}
+              \ZLfill{unknown}{any}}
+}
+
+\newcommand{\ZeroIDSTLegend}{
+  \ZeroLegend{\ZLfill{nonzeroany}{nonzero}
+              \ZLfill{unknown}{any}
+              \ZLfill{active}{involved in key-recovery}
+              \ZL{\PattCell{0,0}}{diff. value is needed}
+              \ZL{\MarkCellN{0,0}}{value is needed}}
+}
+
+
+\newcommand{\ZeroIDLegend}{
+  \ZeroLegend{\ZLfill{nonzerofixed}{fixed}
+              \ZLfill{nonzeroany}{nonzero}
+              \ZLfill{unknown}{any}
+              \ZLfill{active}{involved in key-recovery}
+              \ZL{\PattCell{0,0}}{diff. is needed}
+              \ZL{\MarkCellN{0,0}}{value is needed}
+              \ZL{\FrameCell[filter]{0,0}}{filter}}
+}
+
+\newcommand{\ZeroZCLegend}{
+  \ZeroLegend{\ZLfill{nonzeroany}{nonzero}
+              \ZLfill{unknown}{any}
+              \ZLfill{active}{involved in key-recovery}}
+}
+
+\newcommand{\IntegralDistinguisherLegend}{
+  \ZeroLegend{\ZLfill{nonzerofixed}{fixed}
+              \ZLfill{nonzeroany}{nonzero}
+              \ZLfill{unknown}{any}
+              \ZL{\FrameCell[filter]{0,0}}{active tweak}}
+}
+
+\newcommand{\ZeroZILegend}{
+  \ZeroLegend{\ZLfill{active}{initial round}
+              \ZLfill{unknown}{any}
+              \ZLfill{nonzeroany}{nonzero}
+              \ZLfill{nonzerofixed}{integral}
+              \ZL{\TFill{0,0}}{key branch 1}
+              \ZL{\BFill{0,0}}{key branch 2}
+              \ZL{\FrameCell[filter]{0,0}}{active tweak}}
+}
