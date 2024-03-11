@@ -1,8 +1,9 @@
 # Zeroplus
 
+![logo](miscellaneous/zeroplus.svg)
+
 This repository includes the source code of the tools we used in our paper accepted for ToSC 2024/1 ([FSE 2024](https://fse.iacr.org/2024/)): [Improved Search for Integral, Impossible Differential and Zero-Correlation Attacks: Application to Ascon, ForkSKINNY, SKINNY, MANTIS, PRESENT and QARMAv2](https://tosc.iacr.org/index.php/ToSC/article/view/11408)
 
-![logo](miscellaneous/zeroplus.svg)
 
 ## Table of Contents
 
@@ -26,6 +27,8 @@ This repository includes the source code of the tools we used in our paper accep
     - [Ascon](#ascon)
   - [Searching for Complete ID Attacks](#searching-for-complete-id-attacks)
     - [ForkSKINNY](#forkskinny-2)
+  - [Paper and Presentation](#paper-and-presentation)
+  - [Disclaimer](#disclaimer)
   - [Citation](#citation)
   - [License ](#license-)
 
@@ -600,6 +603,27 @@ As seen, it takes about 7 minutes on a regular laptop to find the complete attac
 After successfully running the above command, we run `latexmk -pdf ./output.tex` to get the shape of the attack in `pdf` format as follows:
 
 ![id_forkskinny_64_192_192_32r](miscellaneous/id_forkskinny_64_192_192_32r.svg)
+
+---
+## Paper and Presentation
+
+To see the details about our method, please refer to our [paper](https://ia.cr/2023/1701). 
+We present this work in [FSE 2024](https://fse.iacr.org/2024/):
+
+- [Video]()
+- [Slides]()
+- [Latex Sources of Our Slides]()
+- [Full Version of Paper](https://ia.cr/2023/1701)
+
+If you have any questions or comments, please feel free to open an issue in this repository or reach out to [Hosein Hadipour](mailto:hsn.hadipour@gmail.com) directly.
+
+## Disclaimer
+
+The solvers used in this tool are not entirely deterministic and may generate different outputs based on the configuration of the host machine. 
+In addition, the same problem can have multiple optimal solutions.
+
+Please note that we have only verified the attacks documented in our paper. 
+Therefore, it is essential to thoroughly review and validate any output of the tool before making claims related to our paper. We hope this tool is useful for the community.
 
 ---
 ## Citation
