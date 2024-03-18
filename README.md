@@ -237,7 +237,7 @@ To see the source codes for QARMAv2, please refer to [this repository](https://g
 
 ## Searching for a Complete Integral Attack
 
-Here we provide an example of searching for a complete integral attack, by only specifying the length of the attack. 
+Here, we provide an example of searching for a complete integral attack, by only specifying the length of the attack. 
 Let's say we are looking for a 23-round integral attack for ForkSKINNY-128-256. 
 Navigate into [this folder](forkskinny/integral) and run the following command:
 
@@ -280,7 +280,8 @@ As can be seen, it takes about 6 seconds to find the attack. You can run `latexm
 
 Note that the above model does not include the partial-sum technique. 
 The advnatge of the above model is that it is quite fast.  
-In the next section we show how to use or CP-based model for the partial-sum technique. It is possible to combine the CP model of partial-sum techique with the above model to find a complete attack considering the partial-sum technique, or use the partial-sum technique as a standalone module.
+In the next section we show how to use our CP-based model for the partial-sum technique. 
+It is possible to combine the CP model of partial-sum techique with the above model to find a complete attack considering the partial-sum technique, or use the partial-sum technique as a standalone module.
 
 ## Partial-sum Technique
 
