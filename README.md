@@ -642,7 +642,7 @@ author = {Hosein Hadipour and
   volume       = {2024},
   number       = {1},
   year         = {2024},
-  pages        = {234-325}
+  pages        = {234-325},
   doi          = {10.46586/tosc.v2024.i1.234-325}
 }
 ```
