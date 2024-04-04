@@ -613,9 +613,9 @@ After successfully running the above command, we run `latexmk -pdf ./output.tex`
 To see the details about our method, please refer to our [paper](https://ia.cr/2023/1701). 
 We present this work in [FSE 2024](https://fse.iacr.org/2024/):
 
-- [Video]()
-- [Slides]()
-- [Latex Sources of Our Slides]()
+- [Video](https://youtu.be/xzKnzFDCMes?t=2597)
+- [Slides](https://iacr.org/submit/files/slides/2024/fse/fse2024/2024_1_41/slides.pdf)
+- [Latex Sources of Our Slides](https://github.com/hadipourh/talks/tree/main/20240326-FSE-2024)
 - [Full Version of Paper](https://ia.cr/2023/1701)
 
 If you have any questions or comments, please feel free to open an issue in this repository or reach out to [Hosein Hadipour](mailto:hsn.hadipour@gmail.com) directly.
