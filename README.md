@@ -45,6 +45,8 @@ Our tool requires the following software:
 - [Or-Tools](https://developers.google.com/optimization)
  to solve our CP models.
 
+- [Gurobi](https://www.gurobi.com/downloads/gurobi-software/) to count the number of ID distinguishers for ForkSKINNY and SKINNY. 
+
 ## Installation
 
 Many CP solvers are bundled with MiniZinc and can be used without any further installation. 
