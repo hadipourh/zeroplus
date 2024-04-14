@@ -331,12 +331,12 @@ In this section, we provide examples of searching for ID/ZC distinguishers for d
 ### SKINNY
 
 Let's say we are looking for an ID distinguisher for 
-15 rounds of ForkSKINNY-64-128 in the related-tweakey setting. 
+15 rounds of SKINNY-64-128 in the related-tweakey setting. 
 With only specifying the length of the distinguisher, i.e., `RD`, we can find the distinguisher as follows. 
 navigate into [this folder](skinny/impossible) and run the following command:
 
 ```bash
-python3 attack.py -v 2 -RD 17
+python3 attack.py -v 2 -RD 15
 ```
 
 The switch `-v` specifies the variant of SKINNY (see `python3 attack --help`), and the switch `-RD` specifies the length of the distinguisher.
@@ -383,7 +383,7 @@ Contradiction happens in the following rounds: [7, 8, 9]
 Number of distinguishers: 15
 #######################################################
 ```
-As can be seen, our tool enumerates the number of ordinary ID distinguishers withing the cluster of identified (truncated) ID distinguishers. We ran the above command on a laptop with an `Intel Corei7-1165G7 @ 2.80GHz` and it took about 34 seconds when using `Or-Tools` as the solver in multi-thread mode utilizing 8 threads on our laptop. 
+As can be seen, our tool enumerates the number of ordinary ID distinguishers within the cluster of identified (truncated) ID distinguisher. We ran the above command on a laptop with an `Intel Corei7-1165G7 @ 2.80GHz` and it took about 34 seconds when using `Or-Tools` as the solver in multi-thread mode utilizing 8 threads on our laptop. 
 
 Our tool also generates the `output.tex` file which contains the shape of the attack in `Tikz` format. We can compile it using `latexmk` to get the shape of the attack in `pdf` format:
 
@@ -394,7 +394,7 @@ latexmk -pdf output.tex
 ![id_skinny_tk2_rtk_16r](miscellaneous/id_skinny_tk2_rtk_16r.svg)
 
 ### ForkSKINNY
-Let's say we are looking for an ID distinguisher for an ID distinguisher for 18 rounds of ForkSKINNY-128-256 in the related-tweakey setting. Navigate into [this folder](forkskinny/impossible) and run the following command:
+Let's say we are looking for an ID distinguisher for 18 rounds of ForkSKINNY-128-256 in the related-tweakey setting. Navigate into [this folder](forkskinny/impossible) and run the following command:
 
 ```bash
 python3 attack.py -v 2 -cs 8 -RD 18 -Ri 10 -R0 17
