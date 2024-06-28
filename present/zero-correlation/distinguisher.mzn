@@ -164,17 +164,17 @@ solve minimize sum(i in 0..63)(xu[0, i] + xl[RD, i]);
 % auxiliary functions
 
 predicate sbox(var -1..1: x3, var -1..1: x2, var -1..1: x1, var -1..1: x0, var -1..1: y3, var -1..1: y2, var -1..1: y1, var -1..1: y0) = 
-    if (x3 == 0 /\ x2 == 0 /\ x1 == 0 /\ x0 == 0) then (y3 == 0 /\ y2 == 0 /\ y1 == 0 /\ y0 == 0)
-    elseif (x3 == 0 /\ x2 == 0 /\ x1 == 0 /\ x0 == 1) then (y3 == -1 /\ y2 == 1 /\ y1 == -1 /\ y0 == 1)
+    if (x3 == 0 /\ x2 == 0 /\ x1 == 0 /\ x0 == 0) then (y3 = 0 /\ y2 = 0 /\ y1 = 0 /\ y0 = 0)
+    elseif (x3 == 0 /\ x2 == 0 /\ x1 == 0 /\ x0 == 1) then (y3 = -1 /\ y2 = 1 /\ y1 = -1 /\ y0 = 1)
     else (y3 = -1 /\ y2 = -1 /\ y1 = -1 /\ y0 = -1)
     endif
 ;
 
 predicate sbox_inv(var -1..1: x3, var -1..1: x2, var -1..1: x1, var -1..1: x0, var -1..1: y3, var -1..1: y2, var -1..1: y1, var -1..1: y0) = 
-    if (x3 == 0 /\ x2 == 0 /\ x1 == 0 /\ x0 == 0) then (y3 == 0 /\ y2 == 0 /\ y1 == 0 /\ y0 == 0)
-    elseif (x3 == 0 /\ x2 == 0 /\ x1 == 0 /\ x0 == 1) then (y3 == 1 /\ y2 == -1 /\ y1 == -1 /\ y0 == 1)
-    elseif (x3 == 1 /\ x2 == 0 /\ x1 == 1 /\ x0 == 0) then (y3 == -1 /\ y2 == -1 /\ y1 == -1 /\ y0 == 1)
-    elseif (x3 == 1 /\ x2 == 0 /\ x1 == 1 /\ x0 == 1) then (y3 == -1 /\ y2 == -1 /\ y1 == -1 /\ y0 == 0)
+    if (x3 == 0 /\ x2 == 0 /\ x1 == 0 /\ x0 == 0) then (y3 = 0 /\ y2 = 0 /\ y1 = 0 /\ y0 = 0)
+    elseif (x3 == 0 /\ x2 == 0 /\ x1 == 0 /\ x0 == 1) then (y3 = 1 /\ y2 = -1 /\ y1 = -1 /\ y0 = 1)
+    elseif (x3 == 1 /\ x2 == 0 /\ x1 == 1 /\ x0 == 0) then (y3 = -1 /\ y2 = -1 /\ y1 = -1 /\ y0 = 1)
+    elseif (x3 == 1 /\ x2 == 0 /\ x1 == 1 /\ x0 == 1) then (y3 = -1 /\ y2 = -1 /\ y1 = -1 /\ y0 = 0)
     else (y3 = -1 /\ y2 = -1 /\ y1 = -1 /\ y0 = -1)
     endif
 ;
