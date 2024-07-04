@@ -36,6 +36,19 @@ from argparse import ArgumentParser, RawTextHelpFormatter
 from drawdistinguisher import DrawDL
 import itertools
 
+# Check if "OR Tools" appears in the output of "minizinc --solvers" command 
+import subprocess
+try:
+    output = subprocess.run(['minizinc', '--solvers'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    if "com.google.ortools.sat" in output.stdout.decode("utf-8"):
+        ortools_available = True
+        print("OR Tools is available")
+    else:
+        ortools_available = False
+        print("OR Tools is not available")
+except FileNotFoundError:
+    ortools_available = False
+
 
 class ID:
     DL_counter = 0
@@ -49,10 +62,10 @@ class ID:
         self.cp_solver_name = param["solver"]
         self.num_of_threads = param["threads"]
         ##################################################
-        # Use this block if you install Or-Tools bundeled with MiniZinc
-        if self.cp_solver_name == "ortools":
-            self.cp_solver_name = "com.google.ortools.sat"
-        ##################################################        
+        if ortools_available:
+            if self.cp_solver_name == "ortools":
+                self.cp_solver_name = "com.google.ortools.sat"
+        #################################################      
         self.cp_solver = minizinc.Solver.lookup(self.cp_solver_name)
         self.time_limit = param["timelimit"]
         self.mzn_file_name = None

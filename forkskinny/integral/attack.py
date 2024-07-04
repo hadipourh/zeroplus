@@ -35,6 +35,18 @@ from argparse import ArgumentParser, RawTextHelpFormatter
 from pathlib import Path
 from drawattack import *
 line_separator = "#"*55
+# Check if "OR Tools" appears in the output of "minizinc --solvers" command 
+import subprocess
+try:
+    output = subprocess.run(['minizinc', '--solvers'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    if "com.google.ortools.sat" in output.stdout.decode("utf-8"):
+        ortools_available = True
+        print("OR Tools is available")
+    else:
+        ortools_available = False
+        print("OR Tools is not available")
+except FileNotFoundError:
+    ortools_available = False
 
 class IntegralAttack:
     Integral_counter = 0

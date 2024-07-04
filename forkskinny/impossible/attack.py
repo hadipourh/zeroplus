@@ -38,6 +38,19 @@ from pathlib import Path
 from tweakeyschedule import *
 line_separator = "#"*55
 
+# Check if "OR Tools" appears in the output of "minizinc --solvers" command 
+import subprocess
+try:
+    output = subprocess.run(['minizinc', '--solvers'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+    if "com.google.ortools.sat" in output.stdout.decode("utf-8"):
+        ortools_available = True
+        print("OR Tools is available")
+    else:
+        ortools_available = False
+        print("OR Tools is not available")
+except FileNotFoundError:
+    ortools_available = False
+
 class ID:
     ID_counter = 0
 
@@ -66,10 +79,10 @@ class ID:
                                      'picat', 'scip', 'choco', 'ortools']
         assert(self.cp_solver_name in self.supported_cp_solvers)
         ##################################################
-        # Use this block if you install Or-Tools bundeled with MiniZinc
-        # if self.cp_solver_name == "ortools":
-        #     self.cp_solver_name = "com.google.ortools.sat"
-        ##################################################        
+        if ortools_available:
+            if self.cp_solver_name == "ortools":
+                self.cp_solver_name = "com.google.ortools.sat"
+        #################################################
         self.cp_solver = minizinc.Solver.lookup(self.cp_solver_name)
 
         if self.RB + self.RF == 0:
