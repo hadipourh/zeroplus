@@ -640,7 +640,7 @@ author = {Hosein Hadipour and
           Sadegh Sadeghi and 
           Maria Eichlseder},
   title = {Improved Search for Integral, Impossible-Differential and Zero-Correlation Attacks: Application to {Ascon}, {ForkSKINNY}, {SKINNY}, {MANTIS}, {PRESENT} and {QARMAv2}},
-  journal      = {{IACR} Trans. Symmetric Cryptol.},
+  journal      = {IACR Trans. Symmetric Cryptol.},
   volume       = {2024},
   number       = {1},
   year         = {2024},
