@@ -62,10 +62,10 @@ apt install python3-full
 apt install git
 apt install wget
 cd /home 
-wget https://github.com/MiniZinc/MiniZincIDE/releases/download/2.8.1/MiniZincIDE-2.8.1-bundle-linux-x86_64.tgz
-tar -xvzf MiniZincIDE-2.8.1-bundle-linux-x86_64.tgz
-mv MiniZincIDE-2.8.1-bundle-linux-x86_64 minizinc
-rm MiniZincIDE-2.8.1-bundle-linux-x86_64.tgz
+wget https://github.com/MiniZinc/MiniZincIDE/releases/download/2.8.5/MiniZincIDE-2.8.5-bundle-linux-x86_64.tgz
+tar -xvzf MiniZincIDE-2.8.5-bundle-linux-x86_64.tgz
+mv MiniZincIDE-2.8.5-bundle-linux-x86_64 minizinc
+rm MiniZincIDE-2.8.5-bundle-linux-x86_64.tgz
 ln -s  /home/minizinc/bin/minizinc /usr/local/bin/minizinc
 apt install python3-pip
 python3 -m pip install minizinc
