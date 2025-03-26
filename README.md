@@ -62,19 +62,39 @@ Additionally, we need the Python package named `minizinc` to work with MiniZinc 
 To install the required software in Ubuntu, one can use the following commands:
 
 ```bash
-apt update
-apt upgrade
-apt install python3-full
-apt install git
-apt install wget
-cd /home 
-wget https://github.com/MiniZinc/MiniZincIDE/releases/download/2.8.5/MiniZincIDE-2.8.5-bundle-linux-x86_64.tgz
-tar -xvzf MiniZincIDE-2.8.5-bundle-linux-x86_64.tgz
-mv MiniZincIDE-2.8.5-bundle-linux-x86_64 minizinc
-rm MiniZincIDE-2.8.5-bundle-linux-x86_64.tgz
-ln -s  /home/minizinc/bin/minizinc /usr/local/bin/minizinc
-apt install python3-pip
-python3 -m pip install minizinc
+#!/bin/bash
+
+# Update and upgrade system packages
+sudo apt update -y
+sudo apt upgrade -y
+
+# Install system dependencies
+sudo apt install -y python3-full python3-pip python3-venv git wget curl
+
+# Create a working directory
+mkdir -p "$HOME/minizinc_install"
+cd "$HOME/minizinc_install"
+
+# Download and extract the latest MiniZinc release
+LATEST_MINIZINC_VERSION=$(curl -s https://api.github.com/repos/MiniZinc/MiniZincIDE/releases/latest | grep -oP '"tag_name": "\K(.*)(?=")')
+wget "https://github.com/MiniZinc/MiniZincIDE/releases/download/$LATEST_MINIZINC_VERSION/MiniZincIDE-$LATEST_MINIZINC_VERSION-bundle-linux-x86_64.tgz"
+tar -xvzf MiniZincIDE-$LATEST_MINIZINC_VERSION-bundle-linux-x86_64.tgz
+mv MiniZincIDE-$LATEST_MINIZINC_VERSION-bundle-linux-x86_64 "$HOME/minizinc"
+rm MiniZincIDE-$LATEST_MINIZINC_VERSION-bundle-linux-x86_64.tgz
+
+# Clean up the created folders
+rm -rf "$HOME/minizinc_install"
+
+# Add MiniZinc to system PATH
+sudo ln -sf "$HOME/minizinc/bin/minizinc" /usr/local/bin/minizinc
+
+# Create a Python virtual environment
+python3 -m venv "$HOME/zerovenv"
+source "$HOME/zerovenv/bin/activate"
+
+# Install Python packages
+pip install --upgrade pip
+pip install minizinc
 ```
 
 ## Structure of Our Tool
