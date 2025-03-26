@@ -40,7 +40,7 @@ import itertools
 import subprocess
 try:
     output = subprocess.run(['minizinc', '--solvers'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    if "com.google.ortools.sat" in output.stdout.decode("utf-8"):
+    if "cp-sat" in output.stdout.decode("utf-8"):
         ortools_available = True
         print("OR Tools is available")
     else:
@@ -60,12 +60,7 @@ class ID:
         self.type = "ID"
         self.RD = param["RD"]
         self.cp_solver_name = param["solver"]
-        self.num_of_threads = param["threads"]
-        ##################################################
-        if ortools_available:
-            if self.cp_solver_name == "ortools":
-                self.cp_solver_name = "com.google.ortools.sat"
-        #################################################      
+        self.num_of_threads = param["threads"]     
         self.cp_solver = minizinc.Solver.lookup(self.cp_solver_name)
         self.time_limit = param["timelimit"]
         self.mzn_file_name = None
@@ -218,9 +213,11 @@ def main():
     
     parser.add_argument("-RD", type=int, default=5, help="Number of rounds for distinguisher")    
     parser.add_argument("-tl", "--timelimit", type=int, default=14400, help="Time limit in seconds")
-    parser.add_argument("-sl", "--solver", default="ortools", type=str,
-                        choices=['gecode', 'chuffed', 'coin-bc', 'gurobi', 'picat', 'scip', 'choco', 'ortools', 'cplex', 'cbc'],
-                        help="choose a cp solver\n")
+    # Fetch available solvers from MiniZinc
+    available_solvers = [solver_name for solver_name in minizinc.default_driver.available_solvers().keys()]
+    parser.add_argument("-sl", "--solver", default="cp-sat", type=str,
+                        choices=available_solvers,
+                        help="Choose a CP solver") 
     parser.add_argument("-p", default=8, type=int, help="number of threads for solvers supporting multi-threading\n")    
     parser.add_argument("-o", "--output", default="output.tex", type=str, help="Output file name")
 

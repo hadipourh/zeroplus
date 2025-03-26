@@ -39,7 +39,7 @@ line_separator = "#"*55
 import subprocess
 try:
     output = subprocess.run(['minizinc', '--solvers'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    if "com.google.ortools.sat" in output.stdout.decode("utf-8"):
+    if "cp-sat" in output.stdout.decode("utf-8"):
         ortools_available = True
         print("OR Tools is available")
     else:
@@ -69,15 +69,8 @@ class IntegralAttack:
         self.time_limit = params["time_limit"]
         self.num_of_threads = params["num_of_threads"]
         self.output_file_name = params["output_file_name"]
-
-        self.supported_cp_solvers = ['gecode', 'chuffed', 'cbc', 'gurobi',
-                                     'picat', 'scip', 'choco', 'ortools']
-        assert(self.cp_solver_name in self.supported_cp_solvers)
-        ##################################################
-        # Use this block if you install Or-Tools bundeled with MiniZinc
-        if self.cp_solver_name == "ortools":
-            self.cp_solver_name = "com.google.ortools.sat"
-        ##################################################        
+        self.supported_cp_solvers = [solver_name for solver_name in minizinc.default_driver.available_solvers().keys()]
+        assert(self.cp_solver_name in self.supported_cp_solvers)       
         self.cp_solver = minizinc.Solver.lookup(self.cp_solver_name)
         self.mzn_file_name = "attack.mzn"
 
@@ -487,10 +480,11 @@ def main():
     parser.add_argument("-Ri", default=9, type=int, help="Number of rounds before the fork")
     parser.add_argument("-R0", default=23, type=int, help="Number of rounds in C0-branch")
     parser.add_argument("-sks", action='store_true', help="Use this flag to move the fist S-box layer of distinguisher to key-recovery part\n")   
-
-    parser.add_argument("-sl", "--solver", default="ortools", type=str,
-                        choices=['gecode', 'chuffed', 'coin-bc', 'gurobi', 'picat', 'scip', 'choco', 'ortools'],
-                        help="choose a cp solver\n")
+    # Fetch available solvers from MiniZinc
+    available_solvers = [solver_name for solver_name in minizinc.default_driver.available_solvers().keys()]
+    parser.add_argument("-sl", "--solver", default="cp-sat", type=str,
+                        choices=available_solvers,
+                        help="Choose a CP solver") 
     parser.add_argument("-p", "--processes", default=8, type=int, help="number of threads for solvers supporting multi-threading\n")
     parser.add_argument("-tl", "--timelimit", default=3600, type=int, help="set a time limit for the solver in seconds\n")
     parser.add_argument("-o", "--outputfile", default="output.tex", type=str, help="output file including the Tikz code to generate the figure of the attack\n")

@@ -1,8 +1,14 @@
 # Zeroplus
+[![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
+[![Python](https://img.shields.io/badge/Python-3.x-blue.svg)](https://www.python.org/)
+[![MiniZinc](https://img.shields.io/badge/MiniZinc-2.8.5+-orange.svg)](https://www.minizinc.org/)
+[![Gurobi](https://img.shields.io/badge/Gurobi-Optimization-red.svg)](https://www.gurobi.com/)
+[![Or-Tools](https://img.shields.io/badge/Or--Tools-CP--SAT-green.svg)](https://developers.google.com/optimization)
+[![Latexmk](https://img.shields.io/badge/Latexmk-Tikz-purple.svg)](https://www.ctan.org/pkg/latexmk) 
 
 ![logo](miscellaneous/zeroplus.svg)
 
-This repository includes the source code of the tools we used in our paper accepted for ToSC 2024/1 ([FSE 2024](https://fse.iacr.org/2024/)): [Improved Search for Integral, Impossible Differential and Zero-Correlation Attacks: Application to Ascon, ForkSKINNY, SKINNY, MANTIS, PRESENT and QARMAv2](https://tosc.iacr.org/index.php/ToSC/article/view/11408)
+This repository contains the source code for the tools utilized in our paper, accepted in ToSC 2024/1 ([FSE 2024](https://fse.iacr.org/2024/)): [Improved Search for Integral, Impossible-Differential, and Zero-Correlation Attacks: Applications to Ascon, ForkSKINNY, SKINNY, MANTIS, PRESENT, and QARMAv2](https://tosc.iacr.org/index.php/ToSC/article/view/11408).
 
 
 ## Table of Contents

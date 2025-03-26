@@ -42,7 +42,7 @@ line_separator = "#"*55
 import subprocess
 try:
     output = subprocess.run(['minizinc', '--solvers'], stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-    if "com.google.ortools.sat" in output.stdout.decode("utf-8"):
+    if "cp-sat" in output.stdout.decode("utf-8"):
         ortools_available = True
         print("OR Tools is available")
     else:
@@ -74,17 +74,9 @@ class ID:
         self.time_limit = params["time_limit"]
         self.num_of_threads = params["num_of_threads"]
         self.output_file_name = params["output_file_name"]
-
-        self.supported_cp_solvers = ['gecode', 'chuffed', 'cbc', 'gurobi',
-                                     'picat', 'scip', 'choco', 'ortools']
+        self.supported_cp_solvers = [solver_name for solver_name in minizinc.default_driver.available_solvers().keys()]
         assert(self.cp_solver_name in self.supported_cp_solvers)
-        ##################################################
-        if ortools_available:
-            if self.cp_solver_name == "ortools":
-                self.cp_solver_name = "com.google.ortools.sat"
-        #################################################
         self.cp_solver = minizinc.Solver.lookup(self.cp_solver_name)
-
         if self.RB + self.RF == 0:
             self.mzn_file_name = "distinguisherb.mzn"          
         else:
@@ -423,8 +415,8 @@ def loadparameters(args):
         params["sks"] = args.sks
     if args.rt is not None:
         params["rt"] = args.rt
-    if args.sl is not None:
-        params["cp_solver_name"] = args.sl
+    if args.solver is not None:
+        params["cp_solver_name"] = args.solver
     if args.p is not None:
         params["num_of_threads"] = args.p
     if args.tl is not None:
@@ -462,9 +454,11 @@ def main():
 
     parser.add_argument("-sks", action='store_false', help="Use this flag to move the fist S-box layer of distinguisher to key-recovery part\n")
     parser.add_argument("-rt", action='store_false', help="Use this flag for related-tweakey setting\n")
-    parser.add_argument("-sl", default="ortools", type=str,
-                        choices=['gecode', 'chuffed', 'coin-bc', 'gurobi', 'picat', 'scip', 'choco', 'ortools'],
-                        help="choose a cp solver\n") 
+    # Fetch available solvers from MiniZinc
+    available_solvers = [solver_name for solver_name in minizinc.default_driver.available_solvers().keys()]
+    parser.add_argument("-sl", "--solver", default="cp-sat", type=str,
+                        choices=available_solvers,
+                        help="Choose a CP solver") 
     parser.add_argument("-p", default=8, type=int, help="number of threads for solvers supporting multi-threading\n")    
     parser.add_argument("-tl", default=4000, type=int, help="set a time limit for the solver in seconds\n")
     parser.add_argument("-o", default="output.tex", type=str, help="output file including the Tikz code to generate the shape of the attack\n")
