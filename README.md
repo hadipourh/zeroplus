@@ -1,15 +1,15 @@
 # Zeroplus
+
 [![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 [![Python](https://img.shields.io/badge/Python-3.x-blue.svg)](https://www.python.org/)
 [![MiniZinc](https://img.shields.io/badge/MiniZinc-2.8.5+-orange.svg)](https://www.minizinc.org/)
 [![Gurobi](https://img.shields.io/badge/Gurobi-Optimization-red.svg)](https://www.gurobi.com/)
 [![Or-Tools](https://img.shields.io/badge/Or--Tools-CP--SAT-green.svg)](https://developers.google.com/optimization)
-[![Latexmk](https://img.shields.io/badge/Latexmk-Tikz-purple.svg)](https://www.ctan.org/pkg/latexmk) 
+[![Latexmk](https://img.shields.io/badge/Latexmk-Tikz-purple.svg)](https://www.ctan.org/pkg/latexmk)
 
 ![logo](miscellaneous/zeroplus.svg)
 
 This repository contains the source code for the tools utilized in our paper, accepted in ToSC 2024/1 ([FSE 2024](https://fse.iacr.org/2024/)): [Improved Search for Integral, Impossible-Differential, and Zero-Correlation Attacks: Applications to Ascon, ForkSKINNY, SKINNY, MANTIS, PRESENT, and QARMAv2](https://tosc.iacr.org/index.php/ToSC/article/view/11408).
-
 
 ## Table of Contents
 
@@ -38,55 +38,45 @@ This repository contains the source code for the tools utilized in our paper, ac
   - [Citation](#citation)
   - [License ](#license-)
 
-
-
 ## Requirements
 
 Our tool requires the following software:
 
-- [Python3](https://www.python.org/downloads/) 
+- [Python3](https://www.python.org/downloads/)
 - [MiniZinc](https://www.minizinc.org/) to compile and solve our CP models
 - [latexmk](https://www.latex-project.org/) to build the `.tex` file and generate the shapes of our attacks (can be replaced by just calling lualatex directly)
-
 - [Or-Tools](https://developers.google.com/optimization)
- to solve our CP models.
-
-- [Gurobi](https://www.gurobi.com/downloads/gurobi-software/) to count the number of ID distinguishers for ForkSKINNY and SKINNY. 
+  to solve our CP models.
+- [Gurobi](https://www.gurobi.com/downloads/gurobi-software/) to count the number of ID distinguishers for ForkSKINNY and SKINNY.
 
 ## Installation
 
-Many CP solvers are bundled with MiniZinc and can be used without any further installation. 
-We use Or-Tools as the CP solver. 
+Many CP solvers are bundled with MiniZinc and can be used without any further installation.
+We use Or-Tools as the CP solver.
 Fortunately, `OR Tools CP-SAT` is bundled with MiniZinc after version 2.8.0. Thus, by installing the latest version of MiniZinc, one can use `OR Tools CP-SAT` without any further installation.
-Additionally, we need the Python package named `minizinc` to work with MiniZinc in Python. 
+Additionally, we need the Python package named `minizinc` to work with MiniZinc in Python.
 To install the required software in Ubuntu, one can use the following commands:
 
 ```bash
 #!/bin/bash
-
 # Update and upgrade system packages
-sudo apt update -y
-sudo apt upgrade -y
+apt update -y
+apt upgrade -y
 
 # Install system dependencies
-sudo apt install -y python3-full python3-pip python3-venv git wget curl
-
-# Create a working directory
-mkdir -p "$HOME/minizinc_install"
-cd "$HOME/minizinc_install"
+apt install -y python3-full python3-pip python3-venv git wget curl
 
 # Download and extract the latest MiniZinc release
 LATEST_MINIZINC_VERSION=$(curl -s https://api.github.com/repos/MiniZinc/MiniZincIDE/releases/latest | grep -oP '"tag_name": "\K(.*)(?=")')
-wget "https://github.com/MiniZinc/MiniZincIDE/releases/download/$LATEST_MINIZINC_VERSION/MiniZincIDE-$LATEST_MINIZINC_VERSION-bundle-linux-x86_64.tgz"
-tar -xvzf MiniZincIDE-$LATEST_MINIZINC_VERSION-bundle-linux-x86_64.tgz
-mv MiniZincIDE-$LATEST_MINIZINC_VERSION-bundle-linux-x86_64 "$HOME/minizinc"
-rm MiniZincIDE-$LATEST_MINIZINC_VERSION-bundle-linux-x86_64.tgz
+wget "https://github.com/MiniZinc/MiniZincIDE/releases/download/${LATEST_MINIZINC_VERSION}/MiniZincIDE-${LATEST_MINIZINC_VERSION}-bundle-linux-x86_64.tgz"
+mkdir -p "$HOME/minizinc"
+tar -xvzf "MiniZincIDE-${LATEST_MINIZINC_VERSION}-bundle-linux-x86_64.tgz" -C "$HOME/minizinc" --strip-components=1
+rm "MiniZincIDE-${LATEST_MINIZINC_VERSION}-bundle-linux-x86_64.tgz"
 
-# Clean up the created folders
-rm -rf "$HOME/minizinc_install"
-
-# Add MiniZinc to system PATH
-sudo ln -sf "$HOME/minizinc/bin/minizinc" /usr/local/bin/minizinc
+# Create a wrapper script to call MiniZinc with proper LD_LIBRARY_PATH
+echo '#!/bin/bash' > /usr/local/bin/minizinc
+echo "exec env LD_LIBRARY_PATH=\$HOME/minizinc/lib:\$LD_LIBRARY_PATH \$HOME/minizinc/bin/minizinc \"\$@\"" >> /usr/local/bin/minizinc
+chmod +x /usr/local/bin/minizinc
 
 # Create a Python virtual environment
 python3 -m venv "$HOME/zerovenv"
@@ -95,6 +85,12 @@ source "$HOME/zerovenv/bin/activate"
 # Install Python packages
 pip install --upgrade pip
 pip install minizinc
+```
+
+The above script is included in the [install.sh](install.sh) script, which can be executed to set up the environment by running the following command:
+
+```bash
+bash install.sh
 ```
 
 ## Structure of Our Tool
@@ -153,7 +149,7 @@ TK[02]
 #######################################################
 ```
 
-As can be seen, it takes about 14 seconds to find the distinguisher. 
+As can be seen, it takes about 14 seconds to find the distinguisher.
 Our tool also generates the `output.tex` file which contains the shape of the distinguisher in `Tikz` format. Run `latexmk -pdf ./output.tex` to see the shape of the distinguisher in `pdf` format:
 
 ![int_skinny_64_192_18r](miscellaneous/int_skinny_64_192_18r.svg)
@@ -199,6 +195,7 @@ The following figure, generated by `latexmk -pdf ./output.tex`, shows the shape 
 ![int_forkskinny_64_192_17r](miscellaneous/int_forkskinny_64_192_17r.svg)
 
 ### Experimental Verification of Integral Distinguishers
+
 To increase the confidence in the correctness of our implementations, here we generate a practical integral distinguisher for ForkSKINNY-64-192 and then verify it experimentally. For this pupose, we have provided a `C++` implemenation of ForkSKINNY in [this folder](forkskinny/integral/verifications/skinnytk.cpp).
 For example, to generate a practical distinguisher, run the following command:
 
@@ -210,7 +207,7 @@ After running the above command successfully, we run `latexmk -pdf ./output.tex`
 
 ![int_forkskinny_64_192_14r](miscellaneous/int_forkskinny_64_192_14r.svg)
 
-As seen in the above figure, only one input cell (position 14) at the input state is active in the corresponding integral distinguisher. 
+As seen in the above figure, only one input cell (position 14) at the input state is active in the corresponding integral distinguisher.
 Together with 3 active tweakey cells in position `0xf` of the 3 tweakey states, we have 4 active cells in total. Therefore, the complexity of the distinguisher is `2^16`.
 Accordingly, we modify the `main()` function in [this file](forkskinny/zero-correlation/verification/skinnyrtk.cpp) as follows to build a practical distinguisher:
 
@@ -221,7 +218,7 @@ int R = 14;
 // Fork point (Rinit)
 uint8_t Ri = 7;
 // The length of C0 branch (R0)
-uint8_t R0 = 27;    
+uint8_t R0 = 27;  
 // Number of active cells in the plaintext
 int nap = 1;
 // Position of active cells in the plaintext
@@ -233,7 +230,7 @@ int atk = 0xf;
 // Number of involved cells in ciphertext
 int nb = 2;
 // Position of involved cells in ciphertext
-int balanced_positions[2] = {3, 15};    
+int balanced_positions[2] = {3, 15};  
 // #############################################################################
 ```
 
@@ -246,7 +243,7 @@ make
 
 The output of the above command is as follows:
 
-```bash 
+```bash
 [x] PRNG initialized by 4 random bytes: 0xDD70F077
 42bb890058b508e8
 267557f24c5a981e
@@ -257,16 +254,16 @@ Target sum: 0
 Random sum: 3
 ```
 
-If you run `./check` multiple times, the `Target sum`  is always zero, whereas the `Random sum` may vary. It confirms that our discovered integral distinguisher works in practice. 
+If you run `./check` multiple times, the `Target sum`  is always zero, whereas the `Random sum` may vary. It confirms that our discovered integral distinguisher works in practice.
 
 ### QARMAv2
 
-To see the source codes for QARMAv2, please refer to [this repository](https://github.com/hadipourh/QARMAnalysis). 
+To see the source codes for QARMAv2, please refer to [this repository](https://github.com/hadipourh/QARMAnalysis).
 
 ## Searching for a Complete Integral Attack
 
-Here, we provide an example of searching for a complete integral attack, by only specifying the length of the attack. 
-Let's say we are looking for a 23-round integral attack for ForkSKINNY-128-256. 
+Here, we provide an example of searching for a complete integral attack, by only specifying the length of the attack.
+Let's say we are looking for a 23-round integral attack for ForkSKINNY-128-256.
 Navigate into [this folder](forkskinny/integral) and run the following command:
 
 ```bash
@@ -274,7 +271,7 @@ python3 attack.py -v 2 -RB 1 -RD 15 -RF 7 -Ri 9 -R0 27
 ```
 
 The parameters `-RB`, `-RD`, `-RF`, specify the number of key recovery rounds before the distinguisher, the length of the distinguisher, and the number of key recovery rounds after the distinguisher, respectively (see `python3 attack --help` for more details). The parameter `-Ri` specifies the number of rounds before the fork point and `-R0` specifies the number of rounds in the first branch after the fork point. The output is as follows:
-  
+
 ```bash
 #######################################################
 Searching for an attack with the following parameters
@@ -306,9 +303,9 @@ As can be seen, it takes about 6 seconds to find the attack. You can run `latexm
 
 ![int_forkskinny_128_256_23r](miscellaneous/int_forkskinny_128_256_23r.svg)
 
-Note that the above model does not include the partial-sum technique. 
-The advnatge of the above model is that it is quite fast.  
-In the next section we show how to use our CP-based model for the partial-sum technique. 
+Note that the above model does not include the partial-sum technique.
+The advnatge of the above model is that it is quite fast.
+In the next section we show how to use our CP-based model for the partial-sum technique.
 It is possible to combine the CP model of partial-sum techique with the above model to find a complete attack considering the partial-sum technique, or use the partial-sum technique as a standalone module.
 
 ## Partial-sum Technique
@@ -322,6 +319,7 @@ python3 pso.py 1 18 15 5 4 9 32
 ```
 
 The parameter of this tool are in order
+
 - `tweakey_setting:       Specify version of Skinny used`
 - `final_round:           Final round of the key recovery`
 - `start_round:           Start round of the key recovery`
@@ -331,7 +329,7 @@ The parameter of this tool are in order
 - `scale:                 Scale the time complexity, must be used since many solver only support limited data types`
 - `s [STEPS], --steps [STEPS] Specify the maximum number of steps, default are the involved subtweakey cells`
 
-This tool derives the order of guessing the sub-tweakeys in the partial-sum techinque, and 
+This tool derives the order of guessing the sub-tweakeys in the partial-sum techinque, and
 saves the output in a json file. For example, the above command saves the output in `1_18_15_5_4_9.json`.
 
 In order to visualize the partial-sum technique, we can use the following command.
@@ -339,7 +337,9 @@ In order to visualize the partial-sum technique, we can use the following comman
 ```bash
 python3 psvisu.py 1_18_15_5_4_9.json -n -p
 ```
+
 The parameter of this tool are in order
+
 - `-c, --color   Use different color for every step`
 - `-s, --steps   Visualize each step individually`
 - `-n, --step-number  Put the step number in each cell except the stk`
@@ -356,9 +356,9 @@ In this section, we provide examples of searching for ID/ZC distinguishers for d
 
 ### SKINNY
 
-Let's say we are looking for an ID distinguisher for 
-15 rounds of SKINNY-64-128 in the related-tweakey setting. 
-With only specifying the length of the distinguisher, i.e., `RD`, we can find the distinguisher as follows. 
+Let's say we are looking for an ID distinguisher for
+15 rounds of SKINNY-64-128 in the related-tweakey setting.
+With only specifying the length of the distinguisher, i.e., `RD`, we can find the distinguisher as follows.
 navigate into [this folder](skinny/impossible) and run the following command:
 
 ```bash
@@ -409,7 +409,8 @@ Contradiction happens in the following rounds: [7, 8, 9]
 Number of distinguishers: 15
 #######################################################
 ```
-As can be seen, our tool enumerates the number of ordinary ID distinguishers within the cluster of identified (truncated) ID distinguisher. We ran the above command on a laptop with an `Intel Corei7-1165G7 @ 2.80GHz` and it took about 34 seconds when using `Or-Tools` as the solver in multi-thread mode utilizing 8 threads on our laptop. 
+
+As can be seen, our tool enumerates the number of ordinary ID distinguishers within the cluster of identified (truncated) ID distinguisher. We ran the above command on a laptop with an `Intel Corei7-1165G7 @ 2.80GHz` and it took about 34 seconds when using `Or-Tools` as the solver in multi-thread mode utilizing 8 threads on our laptop.
 
 Our tool also generates the `output.tex` file which contains the shape of the attack in `Tikz` format. We can compile it using `latexmk` to get the shape of the attack in `pdf` format:
 
@@ -420,13 +421,15 @@ latexmk -pdf output.tex
 ![id_skinny_tk2_rtk_16r](miscellaneous/id_skinny_tk2_rtk_16r.svg)
 
 ### ForkSKINNY
+
 Let's say we are looking for an ID distinguisher for 18 rounds of ForkSKINNY-128-256 in the related-tweakey setting. Navigate into [this folder](forkskinny/impossible) and run the following command:
 
 ```bash
 python3 attack.py -v 2 -cs 8 -RD 18 -Ri 10 -R0 17
 ```
-In the above command, the switch `-cs` specifies the cell size, the switch `-Ri` specifies the number of rounds before the fork point and 
-`-R0` specifies the number of rounds in the branch after the fork point. 
+
+In the above command, the switch `-cs` specifies the cell size, the switch `-Ri` specifies the number of rounds before the fork point and
+`-R0` specifies the number of rounds in the branch after the fork point.
 The following output shows the result of running the above command:
 
 ```bash
@@ -471,7 +474,7 @@ Number of distinguishers: 15
 #######################################################
 ```
 
-As can be seen, it takes about 44 seconds running on a regular laptop. 
+As can be seen, it takes about 44 seconds running on a regular laptop.
 Run `latexmk -pdf ./output.tex` to see the shape of the distinguisher in `pdf` format.
 
 ![id_forkskinny_128_256_rtk_18r](miscellaneous/id_forkskinny_128_256_rtk_18r.svg)
@@ -550,7 +553,7 @@ As can be seen, it takes about 7 minutes running on a regular laptop. Run `latex
 
 ## Searching for Complete ID Attacks
 
-Here we provide an example of searching for a complete ID attack. 
+Here we provide an example of searching for a complete ID attack.
 
 ### ForkSKINNY
 
@@ -628,15 +631,16 @@ Number of distinguishers: 15
 #######################################################
 ```
 
-As seen, it takes about 7 minutes on a regular laptop to find the complete attack. 
+As seen, it takes about 7 minutes on a regular laptop to find the complete attack.
 After successfully running the above command, we run `latexmk -pdf ./output.tex` to get the shape of the attack in `pdf` format as follows:
 
 ![id_forkskinny_64_192_192_32r](miscellaneous/id_forkskinny_64_192_192_32r.svg)
 
 ---
+
 ## Paper and Presentation
 
-To see the details about our method, please refer to our [paper](https://ia.cr/2023/1701). 
+To see the details about our method, please refer to our [paper](https://ia.cr/2023/1701).
 We present this work in [FSE 2024](https://fse.iacr.org/2024/):
 
 - [Video](https://youtu.be/xzKnzFDCMes?t=2597)
@@ -648,13 +652,14 @@ If you have any questions or comments, please feel free to open an issue in this
 
 ## Disclaimer
 
-The solvers used in this tool are not entirely deterministic and may generate different outputs based on the configuration of the host machine. 
+The solvers used in this tool are not entirely deterministic and may generate different outputs based on the configuration of the host machine.
 In addition, the same problem can have multiple optimal solutions.
 
-Please note that we have only verified the attacks documented in our paper. 
+Please note that we have only verified the attacks documented in our paper.
 Therefore, it is essential to thoroughly review and validate any output of the tool before making claims related to our paper. We hope this tool is useful for the community.
 
 ---
+
 ## Citation
 
 If you use our tool in your work, please acknowledge it by citing our paper:
@@ -674,7 +679,9 @@ author = {Hosein Hadipour and
   doi          = {10.46586/tosc.v2024.i1.234-325}
 }
 ```
+
 ---
+
 ## License ![MIT License](https://img.shields.io/badge/license-MIT-blue.svg)
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
